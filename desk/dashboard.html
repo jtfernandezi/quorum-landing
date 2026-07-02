@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quorum — Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Design tokens copied from the landing page (kept separate on purpose) */
+:root{
+  --bg:#07090d; --bg-soft:#0c0f15; --panel:#11151d; --panel-2:#161b25;
+  --border:rgba(255,255,255,.08); --border-2:rgba(255,255,255,.14);
+  --text:#e9edf4; --muted:#8b93a3; --muted-2:#5f6675;
+  --accent:#19e08a; --accent-2:#36d1dc; --accent-3:#7c5cff;
+  --danger:#ff5c72; --gold:#f5c451;
+  --radius:16px; --radius-sm:10px;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(620px 520px at 78% -8%,rgba(25,224,138,.10),transparent 60%),
+  radial-gradient(680px 540px at 10% 4%,rgba(124,92,255,.10),transparent 60%)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+a{color:inherit}
+
+/* topbar */
+.top{position:sticky;top:0;z-index:5;background:rgba(7,9,13,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border)}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.logo{font-weight:800;font-size:1.1rem;letter-spacing:.2px}
+.logo em{font-style:normal;color:var(--accent);font-weight:600;font-size:.8rem;margin-left:6px;
+  border:1px solid var(--border-2);padding:2px 8px;border-radius:20px}
+#macroChip{font-size:.82rem;color:var(--muted)}
+.top .spacer{flex:1}
+.btn{font:inherit;font-size:.85rem;font-weight:600;color:var(--text);background:var(--panel-2);
+  border:1px solid var(--border-2);border-radius:var(--radius-sm);padding:8px 14px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#04140c;border-color:transparent}
+.btn.gold{background:var(--gold);color:#141005;border-color:transparent}
+.btn.danger{background:var(--danger);color:#160408;border-color:transparent}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:default}
+#busy{font-size:.8rem;color:var(--gold);display:none}
+#busy.on{display:inline-flex;align-items:center;gap:6px}
+#busy .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+#note{font-size:.75rem;color:var(--muted-2)}
+
+/* layout */
+main{padding:26px 0 60px}
+section{margin-bottom:22px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:12px;font-weight:600}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.empty{color:var(--muted-2);font-size:.9rem;padding:8px 0}
+
+/* scoreboard */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.card .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.card .v{font-family:var(--mono);font-size:1.35rem;font-weight:600;margin-top:2px}
+.card.hero{border-color:rgba(25,224,138,.35)}
+.pos{color:var(--accent)} .neg{color:var(--danger)}
+
+/* chart */
+#chartWrap{position:relative}
+#chart{width:100%;height:auto;display:block}
+.legend{display:flex;gap:18px;font-size:.78rem;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* badges + chips */
+.badge{font-family:var(--mono);font-size:.68rem;font-weight:600;padding:2px 9px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.sig-bull{color:var(--accent);background:rgba(25,224,138,.12)}
+.sig-neutral{color:var(--accent-2);background:rgba(54,209,220,.12)}
+.sig-caution{color:var(--gold);background:rgba(245,196,81,.12)}
+.sig-bear{color:var(--danger);background:rgba(255,92,114,.12)}
+.chip{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;border:1px solid var(--border-2);color:var(--muted)}
+.chip.mode-opening{color:var(--accent);border-color:rgba(25,224,138,.4)}
+.chip.mode-update{color:var(--gold);border-color:rgba(245,196,81,.4)}
+
+/* brief cards */
+.brief{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 20px;margin-bottom:16px}
+.brief.pending{border-color:var(--border-2);box-shadow:0 0 0 1px rgba(25,224,138,.15)}
+.brief header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.brief .tkr{font-family:var(--mono);font-weight:700;font-size:1.15rem}
+.brief .px{font-family:var(--mono);color:var(--muted)}
+.brief .when{font-size:.75rem;color:var(--muted-2);margin-left:auto}
+.lead{font-size:.85rem;color:var(--muted);margin-bottom:10px}
+.rows{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.arow{display:flex;align-items:baseline;gap:10px;font-size:.87rem}
+.arow .nm{font-weight:600;min-width:104px}
+.arow .nt{color:var(--muted);flex:1}
+.verdict{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;
+  background:var(--panel-2);border-radius:var(--radius-sm);margin-bottom:10px}
+.vpill{font-family:var(--mono);font-weight:700;font-size:.9rem;padding:4px 12px;border-radius:8px}
+.v-BUY{background:rgba(25,224,138,.15);color:var(--accent)}
+.v-PASS{background:rgba(139,147,163,.15);color:var(--muted)}
+.v-HOLD{background:rgba(54,209,220,.15);color:var(--accent-2)}
+.v-TRIM{background:rgba(245,196,81,.15);color:var(--gold)}
+.v-EXIT{background:rgba(255,92,114,.15);color:var(--danger)}
+.conv{flex:1;min-width:120px}
+.conv .bar{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.conv .bar i{display:block;height:100%;background:var(--accent-2);border-radius:3px}
+.conv .lbl{font-size:.7rem;color:var(--muted-2);margin-top:3px}
+.vsum{width:100%;font-size:.85rem;color:var(--text)}
+.debate{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px}
+@media(max-width:700px){.debate{grid-template-columns:1fr}}
+.debate ul{list-style:none;font-size:.82rem;color:var(--muted)}
+.debate li{padding-left:16px;position:relative;margin-bottom:5px}
+.debate .bull li::before{content:"▲";position:absolute;left:0;color:var(--accent);font-size:.7rem}
+.debate .bear li::before{content:"▼";position:absolute;left:0;color:var(--danger);font-size:.7rem}
+.riskline{font-size:.82rem;color:var(--muted);margin-bottom:12px}
+.riskline.veto{color:var(--danger);font-weight:600}
+.brief .actions{display:flex;gap:10px;flex-wrap:wrap}
+.outcome{font-size:.83rem;color:var(--muted);border-top:1px dashed var(--border);padding-top:10px}
+.outcome b{color:var(--text)}
+
+/* positions */
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-2);
+  text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)}
+td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle}
+td.mono,th.r{font-family:var(--mono)}
+.range{position:relative;height:6px;background:rgba(255,255,255,.07);border-radius:3px;min-width:110px}
+.range .fill{position:absolute;top:0;bottom:0;left:0;border-radius:3px;background:linear-gradient(90deg,var(--danger),var(--gold),var(--accent));opacity:.35;width:100%}
+.range .mark{position:absolute;top:-3px;width:2px;height:12px;background:var(--text);border-radius:1px}
+.range .entry{position:absolute;top:-1px;width:2px;height:8px;background:var(--muted-2)}
+.thesis{color:var(--muted-2);font-size:.78rem;max-width:260px}
+
+/* risk panel */
+.gauge{margin-bottom:12px}
+.gauge .k{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.gauge .k b{color:var(--text);font-family:var(--mono);font-weight:600}
+.gauge .bar{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.gauge .bar i{display:block;height:100%;background:var(--accent-2)}
+.gauge .bar i.warn{background:var(--gold)} .gauge .bar i.hot{background:var(--danger)}
+
+/* team board + log */
+.team{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+.tcard{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:13px 15px;display:flex;flex-direction:column;gap:6px}
+.tcard header{display:flex;align-items:center;gap:8px}
+.tcard header b{font-size:.9rem}
+.tcard header .badge{margin-left:auto}
+.tcard .role{font-size:.68rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.06em}
+.tcard .say{font-size:.82rem;color:var(--muted);flex:1}
+.tcard .say b{color:var(--text)}
+.tcard.quiet .say{color:var(--muted-2)}
+.tcard .ctx{font-family:var(--mono);font-size:.68rem;color:var(--muted-2)}
+details.panel summary{cursor:pointer;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
+#log{margin-top:10px;font-family:var(--mono);font-size:.75rem;color:var(--muted);max-height:220px;overflow:auto}
+#log div{padding:2px 0;border-bottom:1px dashed var(--border)}
+
+footer{color:var(--muted-2);font-size:.72rem;border-top:1px solid var(--border);padding-top:14px;margin-top:30px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel-2);
+  border:1px solid var(--border-2);border-radius:var(--radius-sm);padding:10px 18px;font-size:.85rem;
+  opacity:0;transition:opacity .25s;z-index:20;pointer-events:none;max-width:90vw}
+#toast.show{opacity:1}
+#readonly{display:none;font-size:.75rem;color:var(--gold)}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="logo">Quorum<em>desk</em></div>
+  <div id="macroChip">loading…</div>
+  <div class="spacer"></div>
+  <span id="readonly">read-only — run <code>quorum.py serve</code> for buttons</span>
+  <span id="busy"><span class="dot"></span><span id="busyLbl"></span></span>
+  <span id="note"></span>
+  <button class="btn" id="btnScan">🔭 Run scan</button>
+  <button class="btn" id="btnCheck">👁️ Check positions</button>
+</div></header>
+
+<main class="wrap">
+  <section class="cards" id="scoreboard"></section>
+
+  <section class="panel">
+    <h2>Equity vs SPY — the only score that matters</h2>
+    <div id="chartWrap"><svg id="chart" viewBox="0 0 860 250" preserveAspectRatio="none"></svg></div>
+    <div class="legend">
+      <span><i style="background:var(--accent)"></i>Desk</span>
+      <span><i style="background:var(--muted)"></i>SPY</span>
+      <span id="chartNote" style="margin-left:auto"></span>
+    </div>
+  </section>
+
+  <section>
+    <h2 style="margin-left:4px">Briefs awaiting your call</h2>
+    <div id="pendingList"></div>
+  </section>
+
+  <section>
+    <h2 style="margin-left:4px">Your team — 13 specialists, their latest report</h2>
+    <div class="team" id="team"></div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel"><h2>Open positions — the Market Brain</h2><div id="positions"></div></div>
+    <div class="panel"><h2>Risk guardrails — enforced on every brief</h2><div id="riskPanel"></div></div>
+  </section>
+
+  <section class="panel"><h2>Journal — the Outcome agent</h2><div id="journal"></div></section>
+
+  <section class="panel"><h2>Recent briefs</h2><div id="feed"></div></section>
+
+  <details class="panel"><summary>Decision log</summary><div id="log"></div></details>
+
+  <footer>Paper trading only · every figure on this page is simulated · not financial advice ·
+    the desk informs, <b>you</b> approve every trade.</footer>
+</main>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money = x => "$" + Number(x).toLocaleString("en-US", {maximumFractionDigits: 0});
+const pct = (x, d=2) => (x >= 0 ? "+" : "") + x.toFixed(d) + "%";
+const cls = x => x >= 0 ? "pos" : "neg";
+
+const ICON = {scout:"🔭", fundamental:"📈", technical:"📊", sentiment:"📰", macro:"⚖️",
+  strategist:"🧠", backtest:"🧪", risk:"🛡️", execution:"⚡", portfolio:"🧭",
+  earnings:"📅", sentinel:"👁️", outcome:"📒"};
+const ROSTER = [
+  ["scout","Scout","Discovery — screens the universe for setups"],
+  ["fundamental","Fundamental","Valuation, growth, margins"],
+  ["technical","Technical","Trend, RSI, breakouts"],
+  ["sentiment","Sentiment","Reads the headlines (via Strategist)"],
+  ["macro","Macro","SPY trend + VIX regime"],
+  ["strategist","Strategist","The debate + verdict (the one LLM call)"],
+  ["backtest","Backtest","Replays the setup on real history"],
+  ["risk","Risk","Sizing, stops, caps — veto power"],
+  ["execution","Execution","Paper fills, only after you approve"],
+  ["portfolio","Portfolio","Allocation & concentration checks"],
+  ["earnings","Earnings","Event-risk calendar"],
+  ["sentinel","Sentinel","Watches every open position"],
+  ["outcome","Outcome","Journals every closed trade"],
+];
+
+let S = null;          // latest /api/state payload
+let live = false;      // server with buttons vs static file
+
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3500);
+}
+
+async function fetchState(){
+  try {
+    const r = await fetch("/api/state", {cache:"no-store"});
+    if (!r.ok) throw new Error();
+    S = await r.json(); live = true;
+  } catch (e) {
+    try {  // static fallback: brain.json + config.json served as plain files
+      const b = await fetch("brain.json", {cache:"no-store"});
+      const c = await fetch("config.json", {cache:"no-store"});
+      if (!b.ok || !c.ok) throw new Error();
+      S = {brain: await b.json(), config: await c.json(), busy: null, note: ""};
+      live = false;
+    } catch (e2) {
+      $("macroChip").textContent = "no brain.json found — run a scan first";
+      return;
+    }
+  }
+  render();
+}
+
+/* ---------- derived numbers ---------- */
+function marks(){ return S.brain.prices || {}; }
+function equityNow(){
+  const b = S.brain, p = marks();
+  let eq = b.cash;
+  for (const [t, pos] of Object.entries(b.positions))
+    eq += pos.shares * (p[t] ?? pos.entry_price);
+  return eq;
+}
+
+/* ---------- sections ---------- */
+function render(){
+  const b = S.brain;
+  renderTop(); renderScore(); renderChart(); renderPending();
+  renderTeam(); renderPositions(); renderRisk(); renderJournal();
+  renderFeed(); renderLog();
+}
+
+function renderTop(){
+  const m = S.brain.macro;
+  $("macroChip").innerHTML = m
+    ? `<span class="badge sig-${esc(m.signal)}">${esc(m.regime)}</span> ${esc(m.note)}`
+    : "macro: run a scan to read the tape";
+  $("readonly").style.display = live ? "none" : "inline";
+  $("btnScan").style.display = $("btnCheck").style.display = live ? "" : "none";
+  const busy = S.busy;
+  $("busy").classList.toggle("on", !!busy);
+  $("busyLbl").textContent = busy ? busy + " running…" : "";
+  $("btnScan").disabled = $("btnCheck").disabled = !!busy;
+  $("note").textContent = S.note || "";
+}
+
+function renderScore(){
+  const b = S.brain, p = marks();
+  const eq = equityNow();
+  const ret = (eq / b.starting_cash - 1) * 100;
+  let spyRet = null, alpha = null;
+  if (b.spy_start && p.SPY){
+    spyRet = (p.SPY / b.spy_start - 1) * 100;
+    alpha = ret - spyRet;
+  }
+  const asOf = b.prices_as_of ? `marks as of ${b.prices_as_of.replace("T"," ")}` : "no marks yet";
+  $("scoreboard").innerHTML = `
+    <div class="card"><div class="k">Equity</div><div class="v">${money(eq)}</div></div>
+    <div class="card"><div class="k">Cash</div><div class="v">${money(b.cash)}</div></div>
+    <div class="card"><div class="k">Return</div><div class="v ${cls(ret)}">${pct(ret)}</div></div>
+    <div class="card"><div class="k">SPY same window</div><div class="v">${spyRet===null?"—":pct(spyRet)}</div></div>
+    <div class="card hero"><div class="k">Alpha vs SPY</div>
+      <div class="v ${alpha===null?"":cls(alpha)}">${alpha===null?"—":pct(alpha)}</div>
+      <div class="k" style="margin-top:4px">${esc(asOf)}</div></div>`;
+}
+
+function renderChart(){
+  const b = S.brain, H = b.history || [];
+  const svg = $("chart");
+  if (H.length < 2){
+    svg.innerHTML = `<text x="430" y="130" fill="#5f6675" font-size="14" text-anchor="middle">
+      the curve appears after two days of desk activity</text>`;
+    $("chartNote").textContent = H.length ? "1 data point so far" : "";
+    return;
+  }
+  const W=860, Hh=250, padL=46, padR=14, padT=14, padB=26;
+  const eqS = H.map(h => (h.equity / b.starting_cash - 1) * 100);
+  const spyS = (b.spy_start ? H.map(h => h.spy ? (h.spy / b.spy_start - 1) * 100 : null) : H.map(()=>null));
+  const all = eqS.concat(spyS.filter(v => v !== null));
+  let lo = Math.min(...all, 0), hi = Math.max(...all, 0);
+  const span = Math.max(hi - lo, 0.5); lo -= span*.08; hi += span*.08;
+  const X = i => padL + (W - padL - padR) * i / (H.length - 1);
+  const Y = v => padT + (Hh - padT - padB) * (1 - (v - lo) / (hi - lo));
+  const path = s => s.map((v,i) => v===null ? "" : `${i===0||s[i-1]===null?"M":"L"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+  const zero = Y(0);
+  svg.innerHTML = `
+    <line x1="${padL}" y1="${zero}" x2="${W-padR}" y2="${zero}" stroke="rgba(255,255,255,.15)" stroke-dasharray="4 4"/>
+    <text x="6" y="${Y(hi- span*.08)+4}" fill="#5f6675" font-size="11">${pct(hi - span*.08,1)}</text>
+    <text x="6" y="${zero+4}" fill="#5f6675" font-size="11">0%</text>
+    <text x="6" y="${Y(lo + span*.08)+4}" fill="#5f6675" font-size="11">${pct(lo + span*.08,1)}</text>
+    <path d="${path(spyS)}" fill="none" stroke="#8b93a3" stroke-width="1.6"/>
+    <path d="${path(eqS)}" fill="none" stroke="#19e08a" stroke-width="2.2"/>
+    <text x="${padL}" y="${Hh-8}" fill="#5f6675" font-size="11">${esc(H[0].date)}</text>
+    <text x="${W-padR}" y="${Hh-8}" fill="#5f6675" font-size="11" text-anchor="end">${esc(H[H.length-1].date)}</text>`;
+  $("chartNote").textContent = `${H.length} days`;
+}
+
+function briefCard(br, actionable){
+  const modeChip = br.mode === "opening"
+    ? `<span class="chip mode-opening">Opening brief</span>`
+    : `<span class="chip mode-update">Position update</span>`;
+  const lead = br.mode === "opening"
+    ? `${ICON.scout} <b>Scout</b> — ${esc(br.scout_reason)}`
+    : `${ICON.sentinel} <b>Sentinel</b> — ${esc((br.sentinel_triggers||[]).map(t=>t.msg).join("; ") || "thesis intact")}`;
+  const rows = ["fundamental","technical","sentiment","macro","earnings","backtest"].map(k => {
+    const a = br.analysts[k]; if (!a) return "";
+    return `<div class="arow"><span>${ICON[k]}</span><span class="nm">${k[0].toUpperCase()+k.slice(1)}</span>
+      <span class="nt">${esc(a.note)}</span><span class="badge sig-${esc(a.signal)}">${esc(a.signal)}</span></div>`;
+  }).join("");
+  const v = br.verdict;
+  const verdict = `
+    <div class="verdict">
+      <span>${ICON.strategist}</span><span class="vpill v-${esc(v.verdict)}">${esc(v.verdict)}</span>
+      <div class="conv"><div class="bar"><i style="width:${Number(v.conviction)||0}%"></i></div>
+        <div class="lbl">${Number(v.conviction)||0}% conviction · ${v.source==="strategist"?"Strategist LLM":"deterministic vote"}</div></div>
+      <div class="vsum">${esc(v.summary)}</div>
+    </div>
+    <div class="debate">
+      <ul class="bull">${(v.bull_case||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+      <ul class="bear">${(v.bear_case||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+    </div>`;
+  let riskline = "";
+  if (br.risk){
+    riskline = br.risk.veto
+      ? `<div class="riskline veto">${ICON.risk} RISK VETO — ${esc(br.risk.veto)}</div>`
+      : `<div class="riskline">${ICON.risk} ${esc(br.risk.note)}</div>`;
+  } else if (br.position){
+    riskline = `<div class="riskline">${ICON.risk} exit plan: stop ${br.position.stop} · target ${br.position.target}</div>`;
+  }
+  let tail = "";
+  if (actionable && live){
+    if (br.mode === "opening"){
+      tail = br.status === "vetoed"
+        ? `<div class="actions"><button class="btn ghost" onclick="decide('${br.id}','pass')">Dismiss</button></div>`
+        : `<div class="actions">
+             <button class="btn primary" onclick="decide('${br.id}','buy')">Buy ${br.risk?br.risk.shares:""} sh</button>
+             <button class="btn ghost" onclick="decide('${br.id}','pass')">Pass</button></div>`;
+    } else {
+      tail = `<div class="actions">
+        <button class="btn gold" onclick="decide('${br.id}','trim')">Trim ⅓</button>
+        <button class="btn ghost" onclick="decide('${br.id}','hold')">Hold</button>
+        <button class="btn danger" onclick="decide('${br.id}','exit')">Exit all</button></div>`;
+    }
+  } else if (br.status === "decided"){
+    const fill = br.fill_price ? ` @ ${br.fill_price}` : "";
+    tail = `<div class="outcome">${ICON.execution} you chose <b>${esc(br.decision).toUpperCase()}</b>${fill}
+      · ${esc((br.decided_at||"").replace("T"," "))}</div>`;
+  } else if (br.status === "expired"){
+    tail = `<div class="outcome">superseded by a newer brief</div>`;
+  } else if (br.status === "vetoed"){
+    tail = `<div class="outcome">blocked by the Risk agent</div>`;
+  } else if (br.status === "pending" && !live){
+    tail = `<div class="outcome">pending — decide in the terminal or via <code>quorum.py serve</code></div>`;
+  }
+  return `<article class="brief ${actionable?"pending":""}">
+    <header>${modeChip}<span class="tkr">${esc(br.ticker)}</span>
+      <span class="px">$${br.price}</span>
+      <span class="when">${esc((br.created||"").replace("T"," "))}</span></header>
+    <div class="lead">${lead}</div>
+    <div class="rows">${rows}</div>${verdict}${riskline}${tail}
+  </article>`;
+}
+
+function renderPending(){
+  const open = (S.brain.briefs||[]).filter(b => b.status === "pending" || b.status === "vetoed").reverse();
+  $("pendingList").innerHTML = open.length
+    ? open.map(b => briefCard(b, true)).join("")
+    : `<div class="panel empty">Nothing awaiting you. ${live
+        ? `Hit <b>🔭 Run scan</b> to put the desk to work.`
+        : `Run <code>quorum.py scan</code> to put the desk to work.`}</div>`;
+}
+
+function renderPositions(){
+  const b = S.brain, p = marks();
+  const entries = Object.entries(b.positions);
+  if (!entries.length){
+    $("positions").innerHTML = `<div class="empty">No open positions — the brain is all cash.</div>`;
+    return;
+  }
+  const eq = equityNow();
+  const rows = entries.map(([t, pos]) => {
+    const now = p[t] ?? pos.entry_price;
+    const pnl = (now / pos.entry_price - 1) * 100;
+    const clip = v => Math.max(0, Math.min(100, v));
+    const mk = clip((now - pos.stop) / (pos.target - pos.stop) * 100);
+    const en = clip((pos.entry_price - pos.stop) / (pos.target - pos.stop) * 100);
+    return `<tr>
+      <td class="mono"><b>${esc(t)}</b></td><td class="mono">${pos.shares}</td>
+      <td class="mono">${pos.entry_price.toFixed(2)}</td><td class="mono">${Number(now).toFixed(2)}</td>
+      <td class="mono ${cls(pnl)}">${pct(pnl,1)}</td>
+      <td><div class="range"><div class="fill"></div>
+        <div class="entry" style="left:${en}%"></div>
+        <div class="mark" style="left:${mk}%"></div></div>
+        <div style="font-size:.68rem;color:var(--muted-2);display:flex;justify-content:space-between;margin-top:3px">
+          <span>${pos.stop}</span><span>${pos.target}</span></div></td>
+      <td class="thesis">${esc(pos.thesis)}</td></tr>`;
+  }).join("");
+  $("positions").innerHTML = `<table><tr><th>Ticker</th><th>Sh</th><th>Entry</th><th>Now</th>
+    <th>P&L</th><th>Stop → target</th><th>Thesis (travels with the entry)</th></tr>${rows}</table>`;
+}
+
+function renderRisk(){
+  const b = S.brain, c = S.config, p = marks();
+  const eq = equityNow();
+  const nPos = Object.keys(b.positions).length;
+  const cashPct = eq ? b.cash / eq * 100 : 100;
+  let maxW = 0;
+  for (const [t,pos] of Object.entries(b.positions))
+    maxW = Math.max(maxW, pos.shares * (p[t] ?? pos.entry_price) / eq * 100);
+  const vetoes = (b.briefs||[]).filter(x => x.risk && x.risk.veto).length;
+  const gauge = (label, val, max, fmt) => {
+    const r = max ? val / max * 100 : 0;
+    const tone = r > 90 ? "hot" : r > 66 ? "warn" : "";
+    return `<div class="gauge"><div class="k"><span>${label}</span><b>${fmt}</b></div>
+      <div class="bar"><i class="${tone}" style="width:${Math.min(100,r)}%"></i></div></div>`;
+  };
+  $("riskPanel").innerHTML =
+    gauge("Open positions", nPos, c.max_positions, `${nPos} / ${c.max_positions}`) +
+    gauge("Largest position", maxW, c.max_position_pct, `${maxW.toFixed(1)}% (cap ${c.max_position_pct}%)`) +
+    gauge("Capital deployed", 100 - cashPct, 100 - c.cash_floor_pct,
+          `${(100 - cashPct).toFixed(0)}% (floor keeps ${c.cash_floor_pct}% cash)`) +
+    `<div class="gauge"><div class="k"><span>Risk per trade</span><b>${c.risk_per_trade_pct}% of equity</b></div></div>
+     <div class="gauge"><div class="k"><span>Exit plan</span><b>stop ${c.stop_atr_mult}×ATR · target ${c.target_atr_mult}×ATR</b></div></div>
+     <div class="gauge"><div class="k"><span>Vetoes issued</span><b>${vetoes}</b></div></div>`;
+}
+
+function renderJournal(){
+  const J = S.brain.journal || [];
+  if (!J.length){
+    $("journal").innerHTML = `<div class="empty">No closed trades yet — the ledger starts with your first exit.</div>`;
+    return;
+  }
+  const rows = [...J].reverse().map(j => `<tr>
+    <td class="mono">${esc(j.exit_date)}</td><td class="mono"><b>${esc(j.ticker)}</b>${j.partial?" ◔":""}</td>
+    <td class="mono">${j.shares}</td>
+    <td class="mono">${j.entry_price.toFixed(2)} → ${j.exit_price.toFixed(2)}</td>
+    <td class="mono ${cls(j.pnl_pct)}">${pct(j.pnl_pct,1)}</td>
+    <td class="mono">${j.alpha===null||j.alpha===undefined?"—":`<span class="${cls(j.alpha)}">${pct(j.alpha,1)}</span>`}</td>
+    <td style="color:var(--muted)">${esc(j.reason)}</td></tr>`).join("");
+  const wins = J.filter(j => j.pnl > 0).length;
+  const alphas = J.filter(j => j.alpha !== null && j.alpha !== undefined).map(j => j.alpha);
+  const avgA = alphas.length ? alphas.reduce((a,x)=>a+x,0)/alphas.length : null;
+  const totalPnl = J.reduce((a,j)=>a+j.pnl,0);
+  $("journal").innerHTML = `<table><tr><th>Exit</th><th>Ticker</th><th>Sh</th><th>Entry → exit</th>
+    <th>P&L</th><th>Alpha vs SPY</th><th>Reason</th></tr>${rows}</table>
+    <div style="margin-top:10px;font-size:.82rem;color:var(--muted)">
+      ${J.length} trades · ${(wins/J.length*100).toFixed(0)}% winners ·
+      total P&L <b class="${cls(totalPnl)}">${money(totalPnl)}</b>
+      ${avgA===null?"":` · avg alpha vs SPY <b class="${cls(avgA)}">${pct(avgA)}</b>`}</div>`;
+}
+
+function renderFeed(){
+  const done = (S.brain.briefs||[]).filter(b => b.status !== "pending").reverse().slice(0, 6);
+  $("feed").innerHTML = done.length
+    ? done.map(b => briefCard(b, false)).join("")
+    : `<div class="empty">Decided briefs will accumulate here — the desk's paper trail.</div>`;
+}
+
+function renderLog(){
+  const L = (S.brain.log||[]).slice(-60).reverse();
+  $("log").innerHTML = L.map(l => `<div>${esc(l.date)} — ${esc(l.msg)}</div>`).join("")
+    || `<div class="empty">empty</div>`;
+}
+
+/* ---------- team board: what each specialist last reported ---------- */
+function teamReports(){
+  const b = S.brain, briefs = b.briefs || [];
+  const last = briefs[briefs.length - 1] || null;
+  const when = s => esc(String(s || "").replace("T", " "));
+  const R = {};
+  const onT = last ? `on ${esc(last.ticker)} · ${when(last.created)}` : "";
+
+  for (const k of ["fundamental", "technical", "sentiment", "earnings", "backtest"]){
+    const a = last && last.analysts && last.analysts[k];
+    if (a) R[k] = {sig: a.signal, lbl: a.signal, text: esc(a.note), ctx: onT};
+  }
+  if (b.macro)
+    R.macro = {sig: b.macro.signal, lbl: b.macro.regime, text: esc(b.macro.note),
+               ctx: when(b.macro.as_of)};
+  if (last){
+    const v = last.verdict;
+    const tone = {BUY:"bull", HOLD:"neutral", PASS:"neutral", TRIM:"caution", EXIT:"bear"}[v.verdict] || "neutral";
+    R.strategist = {sig: tone, lbl: v.verdict,
+      text: `<b>${Number(v.conviction)||0}% conviction</b> — ${esc(v.summary)}`,
+      ctx: `${v.source === "strategist" ? "LLM verdict" : "deterministic vote"} · ${onT}`};
+  }
+  const lastRisk = [...briefs].reverse().find(x => x.risk);
+  if (lastRisk){
+    const ctx = `on ${esc(lastRisk.ticker)} · ${when(lastRisk.created)}`;
+    R.risk = lastRisk.risk.veto
+      ? {sig: "bear", lbl: "veto", text: esc(lastRisk.risk.veto), ctx}
+      : {text: esc(lastRisk.risk.note), ctx};
+  }
+  const lastFill = [...briefs].reverse().find(x => x.status === "decided" && x.fill_price);
+  if (lastFill)
+    R.execution = {text: `filled your <b>${esc(lastFill.decision).toUpperCase()}</b> —
+        ${esc(lastFill.ticker)} @ ${lastFill.fill_price} (paper)`,
+      ctx: when(lastFill.decided_at)};
+  if (b.last_scan){
+    const s = b.last_scan;
+    R.scout = {text: s.setups && s.setups.length
+        ? "flagged " + s.setups.map(x => `<b>${esc(x.ticker)}</b> (${esc(x.reason)})`).join(", ")
+        : `swept ${s.scanned} tickers — nothing cleared the bar`,
+      ctx: when(s.at)};
+  } else if (last && last.mode === "opening" && last.scout_reason){
+    R.scout = {text: `flagged <b>${esc(last.ticker)}</b> — ${esc(last.scout_reason)}`,
+               ctx: when(last.created)};
+  }
+  if (b.last_check){
+    const c = b.last_check;
+    R.sentinel = c.positions === 0
+      ? {text: "no open positions to watch", ctx: when(c.at)}
+      : (c.flagged || []).length
+        ? {sig: "caution", lbl: "flagged",
+           text: c.flagged.map(f => `<b>${esc(f.ticker)}</b>: ${esc(f.triggers.join("; "))}`).join(" · "),
+           ctx: when(c.at)}
+        : {text: `${c.positions} position(s) reviewed — theses intact`, ctx: when(c.at)};
+  }
+  const nPos = Object.keys(b.positions).length, eq = equityNow();
+  const deployed = eq ? (1 - b.cash / eq) * 100 : 0;
+  R.portfolio = {text: nPos
+      ? `${nPos} position(s) · ${deployed.toFixed(0)}% deployed · cash ${money(b.cash)}`
+      : `all cash (${money(b.cash)}) — waiting for the first setup`,
+    ctx: "live"};
+  const J = b.journal || [];
+  if (J.length){
+    const wins = J.filter(j => j.pnl > 0).length;
+    const alphas = J.filter(j => j.alpha !== null && j.alpha !== undefined).map(j => j.alpha);
+    const avgA = alphas.length ? alphas.reduce((a, x) => a + x, 0) / alphas.length : null;
+    R.outcome = {text: `${J.length} trade(s) journaled · ${(wins/J.length*100).toFixed(0)}% winners`
+        + (avgA === null ? "" : ` · avg alpha vs SPY <b class="${cls(avgA)}">${pct(avgA)}</b>`),
+      ctx: `last exit ${esc(J[J.length-1].exit_date)}`};
+  }
+  return R;
+}
+
+function renderTeam(){
+  const rep = teamReports();
+  $("team").innerHTML = ROSTER.map(([k, name, blurb]) => {
+    const r = rep[k];
+    const badge = r && r.sig
+      ? `<span class="badge sig-${esc(r.sig)}">${esc(r.lbl || r.sig)}</span>` : "";
+    const say = r
+      ? `<div class="say">${r.text}</div>`
+      : `<div class="say">no reports yet — run a scan</div>`;
+    const ctx = r && r.ctx ? `<div class="ctx">${r.ctx}</div>` : "";
+    return `<article class="tcard ${r ? "" : "quiet"}">
+      <header><span>${ICON[k]}</span><b>${name}</b>${badge}</header>
+      <div class="role">${blurb}</div>${say}${ctx}</article>`;
+  }).join("");
+}
+
+/* ---------- actions ---------- */
+async function decide(id, action){
+  try {
+    const r = await fetch("/api/decide", {method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({id, action})});
+    const out = await r.json();
+    toast(out.msg || (out.ok ? "done" : "failed"));
+  } catch (e) { toast("desk unreachable"); }
+  fetchState();
+}
+
+async function runJob(job){
+  try {
+    const r = await fetch("/api/run", {method:"POST",
+      headers:{"Content-Type":"application/json"}, body: JSON.stringify({job})});
+    const out = await r.json();
+    toast(out.msg || "");
+  } catch (e) { toast("desk unreachable"); }
+  fetchState();
+}
+
+$("btnScan").onclick = () => runJob("scan");
+$("btnCheck").onclick = () => runJob("check");
+
+fetchState();
+setInterval(fetchState, 5000);
+</script>
+</body>
+</html>

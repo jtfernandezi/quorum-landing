@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quorum — Your AI trading desk. One shared brain.</title>
+  <meta name="description" content="Quorum is a team of specialized AI trading agents — research, technical, risk, execution and more — that share one Market Brain to find, validate and manage investment ideas before you risk a dollar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="#" class="logo"><span class="mark"></span> Quorum</a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#how">How it works</a>
+        <a href="#agents">Agents</a>
+        <a href="#features">Platform</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#" class="btn btn-ghost" style="padding:9px 18px;">Sign in</a>
+        <a href="#pricing" class="btn btn-primary" style="padding:9px 18px;">Start free</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span> 13 AI agents · one Market Brain</span>
+      <h1>Your AI trading desk.<br /><span class="grad-text">One shared brain.</span></h1>
+      <p class="lead">Quorum turns market noise into validated, risk-checked trade ideas. A team of specialized agents that research, debate and stress-test every position — grounded in one brain that knows your portfolio, your thesis and your risk limits.</p>
+      <form class="capture" id="heroForm" novalidate>
+        <input type="email" id="heroEmail" placeholder="you@email.com" aria-label="Email address" required />
+        <button type="submit" class="btn btn-primary btn-lg">Get early access →</button>
+      </form>
+      <p class="capture-note">Join the waitlist · paper-trade in minutes · no card required</p>
+      <div class="micro">
+        <span><span class="dot"></span> Paper-trade first, always</span>
+        <span><span class="dot"></span> Connects to your broker</span>
+        <span><span class="dot"></span> You approve every trade</span>
+      </div>
+
+      <!-- Dashboard mock -->
+      <div class="hero-mock reveal">
+        <div class="mock-bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <span class="title">quorum · desk / live</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-left">
+            <div class="feed-item">
+              <div class="ico" style="background:rgba(25,224,138,0.12)">🔭</div>
+              <div><h4>Scout Agent flagged NVDA</h4><p>Unusual options flow + 3 analyst upgrades pre-market</p></div>
+              <span class="tag buy">SIGNAL</span>
+            </div>
+            <div class="feed-item" style="animation-delay:.1s">
+              <div class="ico" style="background:rgba(54,209,220,0.12)">📊</div>
+              <div><h4>Technical Agent: breakout confirmed</h4><p>Closed above 50-day resistance on 2.1× volume</p></div>
+              <span class="tag buy">BULLISH</span>
+            </div>
+            <div class="feed-item" style="animation-delay:.2s">
+              <div class="ico" style="background:rgba(255,92,114,0.12)">🛡️</div>
+              <div><h4>Risk Agent capped position at 4%</h4><p>Correlation with existing semis exposure too high</p></div>
+              <span class="tag risk">GUARDRAIL</span>
+            </div>
+            <div class="feed-item" style="animation-delay:.3s">
+              <div class="ico" style="background:rgba(245,196,81,0.12)">⚖️</div>
+              <div><h4>Macro Agent: wait for CPI print</h4><p>Recommends staging entry across 2 tranches</p></div>
+              <span class="tag hold">CAUTION</span>
+            </div>
+          </div>
+          <div class="mock-right">
+            <div class="mini-stat">
+              <div class="label">Desk consensus · NVDA</div>
+              <div class="val up">Buy · 78%</div>
+            </div>
+            <div class="chart">
+              <svg class="spark" viewBox="0 0 300 90" preserveAspectRatio="none">
+                <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(25,224,138,0.35)"/><stop offset="100%" stop-color="rgba(25,224,138,0)"/>
+                </linearGradient></defs>
+                <path d="M0,70 L30,64 L60,68 L90,52 L120,56 L150,40 L180,44 L210,28 L240,32 L270,18 L300,12"
+                      fill="none" stroke="#19e08a" stroke-width="2.5"/>
+                <path d="M0,70 L30,64 L60,68 L90,52 L120,56 L150,40 L180,44 L210,28 L240,32 L270,18 L300,12 L300,90 L0,90 Z" fill="url(#g)"/>
+              </svg>
+            </div>
+            <div class="consensus">
+              <div class="row"><span class="name">Fundamental</span><span class="bar"><i style="width:82%"></i></span><span class="pct">82</span></div>
+              <div class="row"><span class="name">Technical</span><span class="bar"><i style="width:88%"></i></span><span class="pct">88</span></div>
+              <div class="row"><span class="name">Sentiment</span><span class="bar"><i style="width:71%"></i></span><span class="pct">71</span></div>
+              <div class="row"><span class="name">Risk</span><span class="bar"><i style="width:64%"></i></span><span class="pct">64</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TRUST BAND ===================== -->
+  <div class="trust">
+    <div class="wrap trust-inner">
+      <span class="trust-item"><span class="ti">🔑</span> <b>Scoped API tokens</b> — never your password</span>
+      <span class="trust-item"><span class="ti">🚫</span> We <b>can't withdraw</b> your funds</span>
+      <span class="trust-item"><span class="ti">⏻</span> <b>One-tap kill switch</b></span>
+      <span class="trust-item"><span class="ti">🔒</span> <b>SOC 2</b>-track infrastructure</span>
+      <span class="trust-item"><span class="ti">✅</span> <b>You approve</b> every live trade</span>
+    </div>
+  </div>
+
+  <!-- ===================== BROKER STRIP ===================== -->
+  <div class="strip">
+    <div class="wrap">
+      <p>Connects to the brokers &amp; data feeds you already use</p>
+      <div class="logos">
+        <span>Interactive Brokers</span><span>Alpaca</span><span>Charles Schwab</span>
+        <span>Robinhood</span><span>TradingView</span><span>Polygon.io</span>
+        <span>Coinbase</span><span>Tradier</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PROBLEM ===================== -->
+  <section class="problem">
+    <div class="wrap">
+      <span class="eyebrow">The problem</span>
+      <p class="big reveal" style="margin-top:24px;">The average retail investor reacts to <b>less than 1%</b> of what actually moves their portfolio — and acts on it hours too late, with no risk check.</p>
+      <p class="reveal">Quorum runs a full investment desk in the background: scanning thousands of signals, debating the thesis, and sizing the risk — so by the time a trade reaches you, the homework is done.</p>
+    </div>
+  </section>
+
+  <!-- ===================== PILLARS ===================== -->
+  <section style="padding-top:40px;">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Why a desk beats a bot</span>
+        <h2>Three things a lone trading bot can't do</h2>
+        <p>Quorum isn't one model spitting out signals. It's a team with checks, dissent, and a hard stop.</p>
+      </div>
+      <div class="pillars">
+        <div class="pillar reveal">
+          <div class="ico-lg" style="background:rgba(124,92,255,0.12)">⚖️</div>
+          <h3>It debates itself</h3>
+          <p>A bull and a bear agent argue every idea. You see both cases and a conviction score — not a black-box "buy."</p>
+        </div>
+        <div class="pillar hero-pillar reveal">
+          <div class="ico-lg" style="background:rgba(255,92,114,0.12)">🛡️</div>
+          <h3>It can say no — and mean it</h3>
+          <p>The Risk Agent has veto power. It sizes every position, sets stops, and trips a circuit-breaker the moment your limits are hit.</p>
+        </div>
+        <div class="pillar reveal">
+          <div class="ico-lg" style="background:rgba(25,224,138,0.12)">✅</div>
+          <h3>It defers to you</h3>
+          <p>Nothing reaches your broker without your green light. The desk does the homework; the decision stays yours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MARKET BRAIN ===================== -->
+  <section id="features">
+    <div class="wrap">
+      <div class="brain">
+        <div class="copy reveal">
+          <span class="eyebrow alt">The Market Brain</span>
+          <h2>One brain every agent reads from and writes to.</h2>
+          <p>Most trading tools are disconnected dashboards. Quorum's agents share a single, continuously-updated knowledge base — your holdings, your thesis on every position, your risk rules, market regime, and every decision the desk has ever made.</p>
+          <ul>
+            <li><span class="chk">✓</span> Knows your portfolio, cost basis &amp; open risk in real time</li>
+            <li><span class="chk">✓</span> Remembers the thesis behind every position — and flags when it breaks</li>
+            <li><span class="chk">✓</span> Enforces your risk limits across every agent, automatically</li>
+            <li><span class="chk">✓</span> Learns from closed trades to sharpen future calls</li>
+          </ul>
+        </div>
+        <div class="brain-visual reveal">
+          <div class="orbit">
+            <div class="orbit-ring"></div>
+            <div class="core">MARKET<br/>BRAIN</div>
+            <div class="node" style="left:50%;top:-6%;transform:translateX(-50%)">🔭</div>
+            <div class="node" style="right:-6%;top:30%">📊</div>
+            <div class="node" style="right:-6%;bottom:18%">🛡️</div>
+            <div class="node" style="left:50%;bottom:-6%;transform:translateX(-50%)">⚡</div>
+            <div class="node" style="left:-6%;bottom:18%">📰</div>
+            <div class="node" style="left:-6%;top:30%">⚖️</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DEBATE ===================== -->
+  <section style="padding-top:40px;">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow alt">The signature move</span>
+        <h2>Your agents argue, so you don't have to</h2>
+        <p>Before any idea earns a conviction score, a bull and a bear agent build the strongest case for each side. You get the debate — and the verdict.</p>
+      </div>
+      <div class="debate-wrap reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
+          <span class="illus" style="margin:0;">Illustrative interface</span>
+          <span style="font-family:var(--mono);font-size:13px;color:var(--muted);">Debate · $NVDA</span>
+        </div>
+        <div class="debate-cols">
+          <div class="debate-side">
+            <div class="debate-head bull">▲ Bull Researcher</div>
+            <div class="bubble bull">Data-center demand still outrunning supply; 3 analyst upgrades pre-market.</div>
+            <div class="bubble bull">Breakout above the 50-day on 2.1× volume confirms momentum.</div>
+            <div class="bubble bull">Forward P/E below its own 3-year average despite faster growth.</div>
+          </div>
+          <div class="debate-mid">
+            <div class="verdict">
+              <div class="vlabel">Desk verdict</div>
+              <div class="vscore">Buy</div>
+              <div class="vsub">78% conviction<br/>capped at 4% size</div>
+            </div>
+          </div>
+          <div class="debate-side">
+            <div class="debate-head bear">▼ Bear Researcher</div>
+            <div class="bubble bear">Retail sentiment looks euphoric — a contrarian warning sign.</div>
+            <div class="bubble bear">Position would push tech exposure past your 30% sector cap.</div>
+            <div class="bubble bear">CPI print in 36h could whipsaw the whole sector.</div>
+          </div>
+        </div>
+        <p class="illus-note">Sample illustration of the agent debate UI. Not a recommendation or a performance claim.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2>From raw market noise to a trade you can trust</h2>
+        <p>Every idea passes through the same disciplined pipeline your agents run 24/7.</p>
+      </div>
+      <div class="steps" id="stepsGrid">
+        <svg class="flow" id="flowSvg" aria-hidden="true">
+          <path id="flowReturn" class="flow-return"></path>
+          <path id="flowBase" class="flow-base"></path>
+          <path id="flowComet" class="flow-comet"></path>
+        </svg>
+        <div class="step reveal"><span class="num">01</span><h3>Scan</h3><p>Agents watch price action, filings, news, options flow and social sentiment across your universe.</p></div>
+        <div class="step reveal"><span class="num">02</span><h3>Analyze</h3><p>Fundamental, technical and macro agents each build an independent view of the opportunity.</p></div>
+        <div class="step reveal"><span class="num">03</span><h3>Debate</h3><p>The desk reconciles views into a consensus score — bull case, bear case, and conviction level.</p></div>
+        <div class="step reveal"><span class="num">04</span><h3>Stress-test</h3><p>The Backtest &amp; Risk agents simulate the trade against history and your portfolio's exposure.</p></div>
+        <div class="step reveal"><span class="num">05</span><h3>Size</h3><p>Risk Agent sets position size, stop-loss and entry plan inside your predefined limits.</p></div>
+        <div class="step reveal"><span class="num">06</span><h3>Approve</h3><p>You get a one-glance brief. Approve, tweak, or skip — nothing trades without a green light.</p></div>
+        <div class="step reveal"><span class="num">07</span><h3>Execute</h3><p>Execution Agent routes the order to your broker and works the fill to your rules.</p></div>
+        <div class="step reveal"><span class="num">08</span><h3>Monitor</h3><p>Sentinel agents track the thesis post-entry and alert you the moment it changes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== AGENTS ===================== -->
+  <section id="agents">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow alt">Meet the desk</span>
+        <h2>13 specialists. One coordinated team.</h2>
+        <p>Each agent owns a job a great investment desk needs — and they all share the same brain, so nothing falls through the cracks.</p>
+      </div>
+      <div class="agent-grid" id="agentGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURE DEEP DIVES ===================== -->
+  <section>
+    <div class="wrap">
+      <!-- Feature 1 -->
+      <div class="feature reveal">
+        <div class="feat-copy">
+          <span class="eyebrow">Conviction, not guesswork</span>
+          <h3>Every idea comes with a desk consensus score</h3>
+          <p>No more staring at five red dashboards. Quorum collapses every agent's view into a single conviction score — with the full bull and bear case one tap away.</p>
+          <div class="pills"><span class="pill">Bull / bear breakdown</span><span class="pill">Confidence %</span><span class="pill">Catalyst timeline</span><span class="pill">Source citations</span></div>
+        </div>
+        <div class="feat-visual">
+          <div class="kv"><span>Desk consensus</span><span class="up">Buy · 78%</span></div>
+          <div class="kv"><span>Fundamental Agent</span><span class="up">Bullish · undervalued 14%</span></div>
+          <div class="kv"><span>Technical Agent</span><span class="up">Breakout · target $182</span></div>
+          <div class="kv"><span>Sentiment Agent</span><span class="neutral">Mixed · retail euphoric</span></div>
+          <div class="kv"><span>Risk Agent</span><span class="down">Cap 4% · stop $148</span></div>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature reverse reveal">
+        <div class="feat-copy">
+          <span class="eyebrow">Validate before you risk a dollar</span>
+          <h3>Backtest &amp; paper-trade every strategy first</h3>
+          <p>The Backtest Agent replays your idea across years of market history and a forward paper-trading window — so you see the edge (and the drawdowns) before real money is on the line.</p>
+          <div class="pills"><span class="pill">10-yr historical replay</span><span class="pill">Walk-forward testing</span><span class="pill">Live paper portfolio</span><span class="pill">Max drawdown report</span></div>
+        </div>
+        <div class="feat-visual">
+          <span class="illus">Illustrative — example report fields</span>
+          <div class="kv"><span>Strategy: Momentum + risk parity</span><span class="up">Ready to test</span></div>
+          <div class="kv"><span>Historical replay</span><span class="neutral">10-yr window</span></div>
+          <div class="kv"><span>Risk-adjusted return</span><span class="neutral">Sharpe &amp; Sortino</span></div>
+          <div class="kv"><span>Worst-case path</span><span class="neutral">Max drawdown chart</span></div>
+          <div class="kv"><span>Forward paper portfolio</span><span class="up">Live tracking</span></div>
+          <p class="illus-note">Shows the metrics you'd review — your own results depend on your strategy, costs &amp; market conditions.</p>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature reveal">
+        <div class="feat-copy">
+          <span class="eyebrow">Risk that never sleeps</span>
+          <h3>Guardrails enforced across the whole desk</h3>
+          <p>Set your rules once — max position size, sector exposure, daily loss limit. The Risk Agent enforces them on every single agent, and freezes the desk if a limit is breached.</p>
+          <div class="pills"><span class="pill">Position &amp; sector caps</span><span class="pill">Auto stop-loss</span><span class="pill">Correlation checks</span><span class="pill">Daily loss circuit-breaker</span></div>
+        </div>
+        <div class="feat-visual">
+          <div class="kv"><span>Portfolio heat</span><span class="neutral">Moderate · 62%</span></div>
+          <div class="kv"><span>Largest position</span><span class="up">AAPL · 6.2% / 8% cap</span></div>
+          <div class="kv"><span>Sector exposure · Tech</span><span class="down">31% / 30% cap ⚠</span></div>
+          <div class="kv"><span>Open risk (to stops)</span><span class="up">−2.1% of equity</span></div>
+          <div class="kv"><span>Daily loss limit</span><span class="up">−0.8% / −3% breaker</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY NOT ONE AI ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">One agent vs. a desk</span>
+        <h2>You can already bolt one AI onto your broker.<br/>Here's why a desk is different.</h2>
+        <p>Connecting a single chatbot to your account is easy. But one model has no second opinion, no risk veto, and no memory of why you're in a trade.</p>
+      </div>
+      <div class="compare">
+        <div class="compare-card reveal">
+          <h3>A single AI agent</h3>
+          <div class="sub">One model, one opinion</div>
+          <ul>
+            <li><span class="m x">✕</span> Gives one answer with no opposing view</li>
+            <li><span class="m x">✕</span> No independent risk check on its own ideas</li>
+            <li><span class="m x">✕</span> Forgets the thesis behind your positions</li>
+            <li><span class="m x">✕</span> Confident even when it's wrong</li>
+            <li><span class="m x">✕</span> Hard to audit why it acted</li>
+          </ul>
+        </div>
+        <div class="compare-card good reveal">
+          <h3>The Quorum desk</h3>
+          <div class="sub">13 specialists, one shared brain</div>
+          <ul>
+            <li><span class="m c">✓</span> Bull and bear agents debate every idea</li>
+            <li><span class="m c">✓</span> A Risk Agent with veto power and circuit-breakers</li>
+            <li><span class="m c">✓</span> Remembers every thesis and flags when it breaks</li>
+            <li><span class="m c">✓</span> Shows conviction <em>and</em> the dissent behind it</li>
+            <li><span class="m c">✓</span> Every call is sourced and reviewable</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATS BAND ===================== -->
+  <section style="padding:70px 0;">
+    <div class="wrap">
+      <div class="stats-band">
+        <div class="stat reveal"><div class="n grad-text">13</div><div class="l">Specialist agents per desk</div></div>
+        <div class="stat reveal"><div class="n grad-text">24/7</div><div class="l">Market coverage, no fatigue</div></div>
+        <div class="stat reveal"><div class="n grad-text">8,000+</div><div class="l">Signals scanned daily</div></div>
+        <div class="stat reveal"><div class="n grad-text">100%</div><div class="l">Trades you approve first</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">From the early desks</span>
+        <h2>Investors who stopped trading alone</h2>
+        <p><span class="illus" style="margin:0;">Illustrative — placeholder quotes, not real testimonials</span></p>
+      </div>
+      <div class="quotes">
+        <div class="quote reveal">
+          <p>“It's like having a junior analyst, a risk manager and a quant on call at 3am. The consensus score alone saved me from two trades I'd have fat-fingered.”</p>
+          <div class="who"><span class="av"></span><div><b>Marcus L.</b><small>Active swing trader</small></div></div>
+        </div>
+        <div class="quote reveal">
+          <p>“The Risk Agent froze my desk before I overexposed to semis during the August dip. That single guardrail paid for the whole year.”</p>
+          <div class="who"><span class="av"></span><div><b>Priya N.</b><small>Self-directed investor</small></div></div>
+        </div>
+        <div class="quote reveal">
+          <p>“I paper-traded a momentum strategy for six weeks before risking a cent. Seeing the drawdowns up front changed how I size everything.”</p>
+          <div class="who"><span class="av"></span><div><b>Devon R.</b><small>Part-time options trader</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING ===================== -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow alt">Pricing</span>
+        <h2>Start with paper money. Upgrade when you're convinced.</h2>
+        <p>Every plan starts in paper-trading mode. Connect a live broker whenever you're ready.</p>
+      </div>
+      <div class="pricing">
+        <div class="plan reveal">
+          <h3>Observer</h3>
+          <div class="price">$0<small>/mo</small></div>
+          <div class="desc">For watching the desk work before you commit.</div>
+          <ul>
+            <li><span class="chk">✓</span> 4 core agents</li>
+            <li><span class="chk">✓</span> 1 paper portfolio</li>
+            <li><span class="chk">✓</span> Daily desk brief</li>
+            <li><span class="chk">✓</span> Up to 15 watchlist tickers</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Start free</a>
+        </div>
+        <div class="plan featured reveal">
+          <span class="badge">Most popular</span>
+          <h3>Trader</h3>
+          <div class="price">$39<small>/mo</small></div>
+          <div class="desc">The full desk for the serious self-directed investor.</div>
+          <ul>
+            <li><span class="chk">✓</span> All 13 agents</li>
+            <li><span class="chk">✓</span> Live broker execution (you approve)</li>
+            <li><span class="chk">✓</span> Backtesting &amp; paper trading</li>
+            <li><span class="chk">✓</span> Custom risk guardrails</li>
+            <li><span class="chk">✓</span> Real-time thesis alerts</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start 14-day trial</a>
+        </div>
+        <div class="plan reveal">
+          <h3>Pro</h3>
+          <div class="price">$99<small>/mo</small></div>
+          <div class="desc">For high-volume traders running multiple strategies.</div>
+          <ul>
+            <li><span class="chk">✓</span> Everything in Trader</li>
+            <li><span class="chk">✓</span> Multiple portfolios &amp; strategies</li>
+            <li><span class="chk">✓</span> Options &amp; crypto agents</li>
+            <li><span class="chk">✓</span> Priority data feeds</li>
+            <li><span class="chk">✓</span> API access</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Start 14-day trial</a>
+        </div>
+        <div class="plan reveal">
+          <h3>Fund</h3>
+          <div class="price">Custom</div>
+          <div class="desc">For RIAs, family offices &amp; small funds.</div>
+          <ul>
+            <li><span class="chk">✓</span> Everything in Pro</li>
+            <li><span class="chk">✓</span> Multi-seat &amp; client accounts</li>
+            <li><span class="chk">✓</span> Compliance &amp; audit logs</li>
+            <li><span class="chk">✓</span> Custom agents &amp; SLAs</li>
+            <li><span class="chk">✓</span> Dedicated support</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Talk to us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions, answered</h2>
+      </div>
+      <div class="faq" id="faq">
+        <div class="faq-item">
+          <button class="faq-q">Does Quorum trade automatically without me? <span class="plus">+</span></button>
+          <div class="faq-a"><div>No — by default every trade requires your approval. Quorum does the research, builds the consensus and sizes the risk, then presents a brief for you to approve, edit, or skip. You can optionally enable rules-based auto-execution for specific strategies, always inside your risk limits.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Which brokers does it connect to? <span class="plus">+</span></button>
+          <div class="faq-a"><div>Quorum integrates with major brokers including Interactive Brokers, Alpaca, Charles Schwab, Robinhood and Tradier, plus data feeds like Polygon.io and TradingView. You can also run entirely in paper-trading mode with no broker connected.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is my money or broker login ever at risk? <span class="plus">+</span></button>
+          <div class="faq-a"><div>Quorum connects through read/trade API tokens with scoped permissions — we never see or store your broker password, and we can't withdraw funds. You can revoke access at any time, and the Risk Agent's circuit-breakers add a second layer of protection.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do I need to know how to code or build strategies? <span class="plus">+</span></button>
+          <div class="faq-a"><div>Not at all. The agents come with battle-tested default strategies. As you get comfortable you can tune risk rules, build custom strategies and backtest them — all without writing code (the Pro plan adds an API for those who want it).</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is this financial advice? <span class="plus">+</span></button>
+          <div class="faq-a"><div>No. Quorum is a research and execution tool, not a registered investment advisor. Its agents provide analysis and surface ideas, but all decisions — and all responsibility for them — remain yours. See the disclaimer below.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FINAL CTA ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="final reveal">
+        <h2>Put a full AI desk behind every trade.</h2>
+        <p>Start in paper-trading mode in under two minutes. No broker connection, no card required.</p>
+        <form class="capture" id="finalForm" novalidate>
+          <input type="email" id="finalEmail" placeholder="you@email.com" aria-label="Email address" required />
+          <button type="submit" class="btn btn-primary btn-lg">Get early access →</button>
+        </form>
+        <p class="capture-note">We'll email you when your desk is ready. No spam.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <div>
+          <a href="#" class="logo"><span class="mark"></span> Quorum</a>
+          <p>Your AI trading desk. A team of specialized agents, one shared brain — built to make disciplined investing the default.</p>
+        </div>
+        <div class="foot-col">
+          <h5>Product</h5>
+          <a href="#agents">Agents</a><a href="#how">How it works</a><a href="#features">Market Brain</a><a href="#pricing">Pricing</a>
+        </div>
+        <div class="foot-col">
+          <h5>Company</h5>
+          <a href="#">About</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h5>Legal</h5>
+          <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Risk disclosure</a><a href="#">Security</a>
+        </div>
+      </div>
+      <p class="disclaimer">
+        <strong>Risk disclaimer:</strong> Quorum is a software research and execution tool and is <em>not</em> a registered investment advisor, broker-dealer, or financial planner. Nothing on this page or in the product constitutes financial, investment, tax, or legal advice, or a recommendation to buy or sell any security. Trading stocks, options, and crypto involves substantial risk of loss and is not suitable for every investor. <strong>All figures, charts, scores, agent outputs, and example reports shown on this page are illustrative mock-ups for demonstration only — they are not real, actual, or backtested performance, and do not represent or guarantee any result.</strong> Any hypothetical or backtested performance has inherent limitations, does not reflect real trading costs or slippage, and is not indicative of future returns. Testimonials shown are placeholders and not statements by real clients. You are solely responsible for your own investment decisions. This is a product concept landing page for demonstration purposes only.
+      </p>
+      <div class="foot-bottom">
+        <span>© 2026 Quorum Labs, Inc. All rights reserved.</span>
+        <span>Made for disciplined investors.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
