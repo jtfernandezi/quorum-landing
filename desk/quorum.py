@@ -34,6 +34,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(HERE, "config.json")
 DASHBOARD_PATH = os.path.join(HERE, "dashboard.html")
 
+# Which agent is working right now — the dashboard floor animates the real
+# pipeline from this, so it must only ever hold truthful values.
+STAGE = {"agent": None}
+
+
+def _stage(agent: str | None) -> None:
+    STAGE["agent"] = agent
+
 # ------------------------------------------------------------------ rendering
 
 RESET, BOLD, DIM = "\033[0m", "\033[1m", "\033[2m"
@@ -103,23 +111,30 @@ def run_desk(ticker: str, cfg: dict, brain: dict, mode: str, use_llm: bool,
              hist=None, scout_reason: str | None = None,
              macro_view: tuple | None = None) -> dict | None:
     """Runs the analyst panel + Strategist on one ticker. Returns the desk packet."""
+    _stage("technical")
     if hist is None:
         hist = datalib.history(ticker)
     if hist is None:
         print(f'  {DIM}{ticker}: no usable price history — skipped{RESET}')
         return None
     snap = datalib.snapshot(ticker, hist)
+    _stage("fundamental")
     fund = datalib.fundamentals(ticker)
+    _stage("earnings")
     days = datalib.days_to_earnings(ticker)
     if macro_view is None:
+        _stage("macro")
         macro_view = agents.macro_agent(datalib.macro_data())
     m_sig, m_note, regime = macro_view
 
+    _stage("backtest")
     f_sig, f_note = agents.fundamental_agent(fund)
     t_sig, t_note = agents.technical_agent(snap)
     e_sig, e_note = agents.earnings_agent(days)
     b_sig, b_note = agents.backtest_agent(hist)
 
+    _stage("sentiment")
+    heads = datalib.headlines(ticker)
     packet = {
         "mode": mode,
         "ticker": ticker,
@@ -131,7 +146,7 @@ def run_desk(ticker: str, cfg: dict, brain: dict, mode: str, use_llm: bool,
             "earnings": {"signal": e_sig, "note": e_note},
             "backtest": {"signal": b_sig, "note": b_note},
         },
-        "headlines": datalib.headlines(ticker),
+        "headlines": heads,
     }
     if mode == "opening":
         packet["scout_reason"] = scout_reason or "manual request"
@@ -140,10 +155,12 @@ def run_desk(ticker: str, cfg: dict, brain: dict, mode: str, use_llm: bool,
         packet["position"] = dict(pos)
         packet["sentinel_triggers"] = agents.sentinel_agent(pos, snap, days)
 
+    _stage("strategist")
     verdict = agents.strategist_agent(packet, cfg, use_llm=use_llm)
 
     risk = None
     if mode == "opening":
+        _stage("risk")
         prices = {t: p["entry_price"] for t, p in brain["positions"].items()}
         prices[ticker] = snap["price"]
         equity = brainlib.equity(brain, prices)
@@ -301,9 +318,11 @@ def ask(options: dict[str, str]) -> str:
 
 def cmd_scan(args, cfg, brain):
     print(f'\n{ICON["scout"]} {BOLD}Scout{RESET} scanning {len(cfg["universe"])} tickers…')
+    _stage("macro")
     macro_view = agents.macro_agent(datalib.macro_data())
     remember_macro(brain, macro_view)
     print(f'{ICON["macro"]}{BOLD}Macro{RESET} {macro_view[1]}  {badge(macro_view[0])}')
+    _stage("scout")
     histories = datalib.batch_history([t for t in cfg["universe"]
                                        if t not in brain["positions"]])
     candidates = agents.scout_agent(histories, exclude=brain["positions"],
@@ -418,9 +437,11 @@ def cmd_check(args, cfg, brain):
     flagged = []
     print(f'\n{ICON["sentinel"]}{BOLD}Sentinel{RESET} reviewing '
           f'{n_watched} open position(s)…')
+    _stage("macro")
     macro_view = agents.macro_agent(datalib.macro_data())
     remember_macro(brain, macro_view)
     for ticker in list(brain["positions"]):
+        _stage("sentinel")
         pos = brain["positions"][ticker]
         hist = datalib.history(ticker)
         snap = datalib.snapshot(ticker, hist) if hist is not None else None
@@ -538,6 +559,7 @@ def cmd_serve(args, cfg, brain):
             state["note"] = f"{job} failed: {e}"
         finally:
             state["busy"] = None
+            _stage(None)
 
     class Handler(BaseHTTPRequestHandler):
         def _json(self, code: int, obj) -> None:
@@ -566,7 +588,8 @@ def cmd_serve(args, cfg, brain):
             elif self.path == "/api/state":
                 b = brainlib.load(cfg)
                 self._json(200, {"brain": b, "config": cfg, "busy": state["busy"],
-                                 "note": state["note"], "live": True,
+                                 "stage": STAGE["agent"], "note": state["note"],
+                                 "live": True,
                                  "now": _dt.datetime.now().isoformat(timespec="seconds")})
             else:
                 self._json(404, {"error": "not found"})

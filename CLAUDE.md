@@ -20,6 +20,18 @@ separate worlds:** the vanilla-HTML/no-build rules below apply to the landing pa
 only, and desk work must never modify `index.html` / `styles.css` / `script.js` (the
 dashboard copies the design tokens instead of linking them).
 
+Dashboard specifics worth knowing before editing `desk/dashboard.html` (still a single
+file, no build): it is **hash-routed into pages** (Overview / Briefs / Your team /
+Positions / Guardrails / Journal / Activity — the `route()` fn + `PAGE_IDS`). The team
+page renders "the floor": a radial map with the Market Brain at center and the 13 agents
+seated around it. **The floor's "thinking" pulses are evidence, not decoration** — the
+server reports which agent is actually executing via `STAGE` in `quorum.py` (`_stage()`
+calls placed at real pipeline steps, exposed as `stage` in `/api/state`); idle means no
+pulses. Keep that truthful — don't add ambient/fake activity animations. The brain also
+persists `last_scan` / `last_check` so Scout and Sentinel can report "I looked and found
+nothing." One data gotcha: `data.snapshot()` scores the last *completed* session's volume
+when run intraday (partial-bar fix) — don't "simplify" that away.
+
 ## Stack & constraints
 
 - **Vanilla HTML + CSS + JS. No framework, no build step, no package manager, no dependencies.**

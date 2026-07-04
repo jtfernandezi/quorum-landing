@@ -11,9 +11,10 @@ to bad ideas: a distributed n8n + DB pipeline silently corrupted the data its LL
 reasoned over, and they hallucinated on top of it. This MVP inverts that: **one local
 process, one JSON brain file, deterministic data, and exactly one LLM call per brief.**
 Twelve of the thirteen agents are pure functions over computed market data (yfinance).
-Only the Strategist calls Claude — it receives verified numbers + raw headlines,
-plays the Sentiment analyst, writes the bull/bear debate, and returns a structured
-verdict. If the API is unreachable, a deterministic vote stands in and says so.
+Only the Strategist calls the LLM (OpenAI SDK; model set in `config.json`) — it receives
+verified numbers + raw headlines, plays the Sentiment analyst, writes the bull/bear
+debate, and returns a structured verdict. If the API is unreachable, a deterministic
+vote stands in and says so.
 
 ## The 13 agents
 
@@ -41,7 +42,13 @@ exit plan that travel with the entry), journal, decision log, SPY benchmark anch
 ```bash
 cd desk
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-export ANTHROPIC_API_KEY=sk-ant-…   # only needed for the Strategist LLM
+export OPENAI_API_KEY=sk-…   # only needed for the Strategist LLM (put it in ~/.zshrc)
+```
+
+Optional quality-of-life alias (run the desk from anywhere):
+
+```bash
+alias quorum='cd "/path/to/quorum-landing/desk" && .venv/bin/python quorum.py'
 ```
 
 ## Use
@@ -52,15 +59,24 @@ export ANTHROPIC_API_KEY=sk-ant-…   # only needed for the Strategist LLM
 .venv/bin/python quorum.py serve       # → http://127.0.0.1:4400
 ```
 
-One page, styled like the landing site, backed by a tiny localhost-only server:
+One app, styled like the landing site, backed by a tiny localhost-only server.
+Hash-routed pages (still a single `dashboard.html`, no build step):
 
-- **Run scan / Check positions** buttons kick the desk from the browser
-- pending briefs render as cards — the full debate — with **[Buy] [Pass]** or
-  **[Trim ⅓] [Hold] [Exit all]** buttons (fills use a fresh price at click time)
-- scoreboard (equity · cash · return · SPY · **alpha**), equity-vs-SPY chart,
-  positions with stop→target bars and their theses, risk-guardrail gauges,
-  the Outcome journal, the decision log, and the **team board** — one card per
-  specialist, each showing the latest thing that agent reported and when
+- **Overview** — scoreboard (equity · cash · return · SPY · **alpha**),
+  "needs you" callout, equity-vs-SPY chart
+- **Briefs** — pending briefs as cards — the full debate — with **[Buy] [Pass]** or
+  **[Trim ⅓] [Hold] [Exit all]** buttons (fills use a fresh price at click time);
+  the tab shows a count badge when something awaits you
+- **Your team** — the trading floor: the Market Brain at the center, the 13
+  specialists seated around it. While a scan/check runs, the agent actually
+  working right now lights up and pulses its signal into the brain, in real
+  pipeline order (the server reports the true stage); idle means no pulses.
+  Click any seat for that specialist's dossier and latest report
+- **Positions** — the Market Brain's open positions with stop→target bars and theses
+- **Guardrails** — the Risk agent's limits as gauges
+- **Journal** — the Outcome agent's closed-trade ledger
+- **Activity** — recent briefs + the decision log
+- **Run scan / Check positions** buttons kick the desk from any page
 
 If you open `dashboard.html` through a plain static server instead, it falls back
 to read-only (no buttons) over `brain.json`.
@@ -88,7 +104,7 @@ was created; `journal` shows per-trade alpha vs SPY over the same holding window
 
 ## Config (`config.json`)
 
-- `model` — Strategist model (default `claude-opus-4-8`)
+- `model` — Strategist model (currently `gpt-4o` via the OpenAI SDK)
 - `universe` — tickers Scout watches (edit freely)
 - `risk_per_trade_pct` 1% · `max_position_pct` 15% · `max_positions` 6 ·
   `cash_floor_pct` 10% — the Risk agent's hard rules

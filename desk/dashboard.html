@@ -49,13 +49,29 @@ a{color:inherit}
 @keyframes pulse{50%{opacity:.25}}
 #note{font-size:.75rem;color:var(--muted-2)}
 
+/* nav tabs + pages */
+.tabs{border-top:1px solid var(--border)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs a{text-decoration:none;font-size:.82rem;font-weight:600;color:var(--muted);
+  padding:10px 14px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a:hover{color:var(--text)}
+.tabs a.on{color:var(--text);border-bottom-color:var(--accent)}
+.tabs .count{background:var(--accent);color:#04140c;border-radius:10px;font-size:.66rem;
+  font-family:var(--mono);font-weight:600;padding:1px 7px;margin-left:6px;display:none}
+.tabs .count.show{display:inline-block}
+.page{display:none}
+.page.on{display:block;animation:pagein .22s ease}
+@keyframes pagein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+#needsYou{font-size:.9rem;color:var(--muted)}
+#needsYou b{color:var(--text)}
+#needsYou a{color:var(--accent);font-weight:600;text-decoration:none}
+#needsYou.hot{border-color:rgba(25,224,138,.35)}
+
 /* layout */
 main{padding:26px 0 60px}
 section{margin-bottom:22px}
 .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
 h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:12px;font-weight:600}
-.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
-@media(max-width:900px){.grid2{grid-template-columns:1fr}}
 .empty{color:var(--muted-2);font-size:.9rem;padding:8px 0}
 
 /* scoreboard */
@@ -142,18 +158,119 @@ td.mono,th.r{font-family:var(--mono)}
 .gauge .bar i{display:block;height:100%;background:var(--accent-2)}
 .gauge .bar i.warn{background:var(--gold)} .gauge .bar i.hot{background:var(--danger)}
 
-/* team board + log */
-.team{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
-.tcard{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-  padding:13px 15px;display:flex;flex-direction:column;gap:6px}
-.tcard header{display:flex;align-items:center;gap:8px}
-.tcard header b{font-size:.9rem}
-.tcard header .badge{margin-left:auto}
-.tcard .role{font-size:.68rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.06em}
-.tcard .say{font-size:.82rem;color:var(--muted);flex:1}
-.tcard .say b{color:var(--text)}
-.tcard.quiet .say{color:var(--muted-2)}
-.tcard .ctx{font-family:var(--mono);font-size:.68rem;color:var(--muted-2)}
+/* ===== team page — the floor ===== */
+.desk-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;flex-wrap:wrap;
+  padding:26px 4px 22px}
+.eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.3em;color:var(--accent);margin-bottom:12px}
+.eyebrow i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);
+  margin-right:10px;vertical-align:1px;animation:pulse 2s infinite}
+.desk-hero h1{font-size:2.15rem;font-weight:800;letter-spacing:-.8px;line-height:1.08;text-wrap:balance}
+.desk-hero h1 .grad{background:linear-gradient(90deg,var(--accent),var(--accent-2) 55%,var(--accent-3));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.desk-hero p{color:var(--muted);max-width:560px;margin-top:10px;font-size:.9rem}
+.dh-stats{display:flex;flex-direction:column;gap:8px;flex:1;min-width:260px}
+.dh-stats .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:700px){.dh-stats .row{justify-content:flex-start}}
+.tstat{font-family:var(--mono);font-size:.68rem;color:var(--muted);border:1px solid var(--border-2);
+  border-radius:8px;padding:5px 11px;background:rgba(255,255,255,.02);font-variant-numeric:tabular-nums}
+.tstat b{color:var(--accent);font-weight:600}
+
+.floor-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start;margin-bottom:22px}
+@media(max-width:900px){.floor-wrap{grid-template-columns:1fr}}
+.floor-shell{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 18px 8px;position:relative;overflow:hidden}
+.floor{position:relative;aspect-ratio:1;max-width:540px;margin:4px auto 10px}
+.floor::before{content:"";position:absolute;inset:4%;border-radius:50%;
+  background:repeating-radial-gradient(circle at 50% 50%,transparent 0 17%,rgba(255,255,255,.035) 17% calc(17% + 1px));
+  pointer-events:none}
+.floor::after{content:"";position:absolute;inset:-6%;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,rgba(25,224,138,.055) 24deg,transparent 52deg);
+  animation:sweep 16s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+#floorLines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.seat{position:absolute;transform:translate(-50%,-50%);width:76px;display:flex;flex-direction:column;
+  align-items:center;gap:5px;background:none;border:none;padding:0;cursor:pointer;font:inherit;
+  color:var(--muted);z-index:3}
+.seat-av{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  font-size:1.12rem;border:1px solid var(--border-2);
+  background:radial-gradient(circle at 32% 26%,var(--c1),var(--c2) 72%),var(--panel-2);
+  box-shadow:0 0 0 3px rgba(255,255,255,.03);transition:transform .16s ease,box-shadow .16s ease}
+.seat-name{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.seat .dotp{position:absolute;top:-1px;right:-1px;width:9px;height:9px;border-radius:50%;
+  background:var(--muted-2);border:2px solid var(--panel)}
+.seat.standby{opacity:.5}
+.seat.reported .dotp{background:var(--accent);animation:pulse 2s infinite}
+.seat.reported .seat-av{box-shadow:0 0 0 3px rgba(25,224,138,.10),0 0 16px rgba(25,224,138,.10)}
+.seat:hover .seat-av,.seat:focus-visible .seat-av{transform:scale(1.14)}
+.seat:focus-visible .seat-av{box-shadow:0 0 0 2px var(--accent-2)}
+.seat.sel{color:var(--text);opacity:1}
+.seat.sel .seat-av{box-shadow:0 0 0 2px var(--accent),0 0 22px rgba(25,224,138,.28);transform:scale(1.1)}
+.brain-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:132px;height:132px;
+  border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;z-index:2;border:1px solid rgba(25,224,138,.35);
+  background:radial-gradient(circle at 35% 28%,rgba(25,224,138,.16),rgba(124,92,255,.10) 58%,rgba(7,9,13,.72)),var(--panel-2);
+  box-shadow:0 0 44px rgba(25,224,138,.10)}
+.brain-core .k{font-family:var(--mono);font-size:.54rem;letter-spacing:.24em;color:var(--muted)}
+.brain-core .eq{font-family:var(--mono);font-weight:600;font-size:1.04rem;margin-top:3px;font-variant-numeric:tabular-nums}
+.brain-core .a{font-family:var(--mono);font-size:.62rem;margin-top:2px}
+.ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;
+  border:1px solid rgba(25,224,138,.22);animation:ringpulse 4.2s ease-out infinite;pointer-events:none;z-index:1}
+@keyframes ringpulse{0%{width:132px;height:132px;opacity:.65}100%{width:330px;height:330px;opacity:0}}
+
+/* thinking state — only the agent actually working pulses toward the brain */
+#floorStage{float:right;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;
+  color:var(--accent-2);text-transform:none}
+.seat.thinking{color:var(--text);opacity:1}
+.seat.thinking .seat-av{box-shadow:0 0 0 2px rgba(54,209,220,.55),0 0 26px rgba(54,209,220,.30);
+  transform:scale(1.16)}
+.seat.thinking .seat-av::after{content:"";position:absolute;inset:-7px;border-radius:50%;
+  border:1px dashed rgba(54,209,220,.55);animation:orbit 2.4s linear infinite}
+@keyframes orbit{to{transform:rotate(360deg)}}
+#floorLines path.think{stroke:rgba(54,209,220,.55);stroke-width:1.6}
+.brain-core.thinking{border-color:rgba(54,209,220,.55);box-shadow:0 0 60px rgba(54,209,220,.20)}
+#floor.busy .ring{animation-duration:2.1s;border-color:rgba(54,209,220,.30)}
+
+.dossier{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.dos-head{display:flex;align-items:center;gap:14px}
+.dos-av{width:54px;height:54px;border-radius:16px;font-size:1.45rem;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--c1),var(--c2));border:1px solid var(--border-2);flex:none}
+.dos-id b{font-size:1.05rem;display:block}
+.dos-id span{font-family:var(--mono);font-size:.64rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.12em}
+.tm-live{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.62rem;font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.1em;color:var(--muted-2);flex:none}
+.tm-live i{width:7px;height:7px;border-radius:50%;background:var(--muted-2)}
+.tm-live.on{color:var(--accent)}
+.tm-live.on i{background:var(--accent);animation:pulse 2s infinite}
+.dos-blurb{font-size:.8rem;color:var(--muted-2);border-left:2px solid var(--border-2);padding-left:10px}
+.bubble{position:relative;background:var(--panel-2);border:1px solid var(--border);
+  border-radius:12px;padding:11px 13px;font-size:.85rem;color:var(--muted)}
+.bubble b{color:var(--text)}
+.bubble::before{content:"";position:absolute;top:-6px;left:18px;width:10px;height:10px;
+  background:var(--panel-2);border-left:1px solid var(--border);border-top:1px solid var(--border);
+  transform:rotate(45deg)}
+.bubble .badge{float:right;margin-left:8px;margin-bottom:4px}
+.bubble.standby{color:var(--muted-2);border-style:dashed}
+.tm-ctx{font-family:var(--mono);font-size:.66rem;color:var(--muted-2)}
+.dos-hint{font-family:var(--mono);font-size:.62rem;color:var(--muted-2);margin-top:auto;letter-spacing:.06em}
+
+.msg{display:flex;gap:12px;padding:11px 0;border-bottom:1px dashed var(--border)}
+.msg:last-child{border-bottom:none}
+.msg-av{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;font-size:.95rem;
+  background:linear-gradient(140deg,var(--c1),var(--c2));border:1px solid var(--border)}
+.msg-head{display:flex;gap:10px;align-items:baseline}
+.msg-head b{font-size:.84rem}
+.msg-head span{font-family:var(--mono);font-size:.62rem;color:var(--muted-2);font-variant-numeric:tabular-nums}
+.msg-body{font-size:.84rem;color:var(--muted);margin-top:2px}
+.msg-body b{color:var(--text)}
+@media(max-width:600px){.seat{width:44px}.seat-name{display:none}
+  .seat-av{width:38px;height:38px;font-size:.95rem}.floor-shell{padding:14px 10px 6px}
+  .brain-core{width:104px;height:104px}.brain-core .eq{font-size:.86rem}
+  @keyframes ringpulse{0%{width:104px;height:104px;opacity:.65}100%{width:250px;height:250px;opacity:0}}}
+@media (prefers-reduced-motion:reduce){
+  .floor::after,.ring,.eyebrow i,.seat.reported .dotp,.tm-live.on i{animation:none}
+  .seat.thinking .seat-av::after{animation:none}
+  .page.on{animation:none}}
 details.panel summary{cursor:pointer;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
 #log{margin-top:10px;font-family:var(--mono);font-size:.75rem;color:var(--muted);max-height:220px;overflow:auto}
 #log div{padding:2px 0;border-bottom:1px dashed var(--border)}
@@ -177,41 +294,89 @@ footer{color:var(--muted-2);font-size:.72rem;border-top:1px solid var(--border);
   <span id="note"></span>
   <button class="btn" id="btnScan">🔭 Run scan</button>
   <button class="btn" id="btnCheck">👁️ Check positions</button>
-</div></header>
+</div>
+<nav class="tabs"><div class="wrap">
+  <a href="#overview" data-page="overview">Overview</a>
+  <a href="#briefs" data-page="briefs">Briefs<span class="count" id="pendingCount"></span></a>
+  <a href="#team" data-page="team">Your team</a>
+  <a href="#positions" data-page="positions">Positions</a>
+  <a href="#guardrails" data-page="guardrails">Guardrails</a>
+  <a href="#journal" data-page="journal">Journal</a>
+  <a href="#activity" data-page="activity">Activity</a>
+</div></nav>
+</header>
 
 <main class="wrap">
-  <section class="cards" id="scoreboard"></section>
 
-  <section class="panel">
-    <h2>Equity vs SPY — the only score that matters</h2>
-    <div id="chartWrap"><svg id="chart" viewBox="0 0 860 250" preserveAspectRatio="none"></svg></div>
-    <div class="legend">
-      <span><i style="background:var(--accent)"></i>Desk</span>
-      <span><i style="background:var(--muted)"></i>SPY</span>
-      <span id="chartNote" style="margin-left:auto"></span>
-    </div>
-  </section>
+  <!-- ===== OVERVIEW ===== -->
+  <div class="page" id="page-overview">
+    <section class="cards" id="scoreboard"></section>
+    <section class="panel" id="needsYou"></section>
+    <section class="panel">
+      <h2>Equity vs SPY — the only score that matters</h2>
+      <div id="chartWrap"><svg id="chart" viewBox="0 0 860 250" preserveAspectRatio="none"></svg></div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>Desk</span>
+        <span><i style="background:var(--muted)"></i>SPY</span>
+        <span id="chartNote" style="margin-left:auto"></span>
+      </div>
+    </section>
+  </div>
 
-  <section>
-    <h2 style="margin-left:4px">Briefs awaiting your call</h2>
-    <div id="pendingList"></div>
-  </section>
+  <!-- ===== BRIEFS ===== -->
+  <div class="page" id="page-briefs">
+    <section>
+      <h2 style="margin-left:4px">Briefs awaiting your call</h2>
+      <div id="pendingList"></div>
+    </section>
+  </div>
 
-  <section>
-    <h2 style="margin-left:4px">Your team — 13 specialists, their latest report</h2>
-    <div class="team" id="team"></div>
-  </section>
+  <!-- ===== YOUR TEAM ===== -->
+  <div class="page" id="page-team">
+    <section class="desk-hero">
+      <div>
+        <div class="eyebrow"><i></i>THE DESK · LIVE</div>
+        <h1>Thirteen specialists.<br><span class="grad">One brain. Your call.</span></h1>
+        <p>Every run, the whole floor goes to work — twelve deterministic analysts wired into one
+          shared Market Brain, and one Strategist to argue the case. Nothing trades without you.</p>
+      </div>
+      <div class="dh-stats" id="deskStats"></div>
+    </section>
 
-  <section class="grid2">
-    <div class="panel"><h2>Open positions — the Market Brain</h2><div id="positions"></div></div>
-    <div class="panel"><h2>Risk guardrails — enforced on every brief</h2><div id="riskPanel"></div></div>
-  </section>
+    <section class="floor-wrap">
+      <div class="floor-shell">
+        <h2>The floor — live signal flow <span id="floorStage"></span></h2>
+        <div class="floor" id="floor"></div>
+      </div>
+      <aside class="dossier" id="dossier"></aside>
+    </section>
 
-  <section class="panel"><h2>Journal — the Outcome agent</h2><div id="journal"></div></section>
+    <section class="panel">
+      <h2>Desk comms — the floor talking</h2>
+      <div id="commsFeed"></div>
+    </section>
+  </div>
 
-  <section class="panel"><h2>Recent briefs</h2><div id="feed"></div></section>
+  <!-- ===== POSITIONS ===== -->
+  <div class="page" id="page-positions">
+    <section class="panel"><h2>Open positions — the Market Brain</h2><div id="positions"></div></section>
+  </div>
 
-  <details class="panel"><summary>Decision log</summary><div id="log"></div></details>
+  <!-- ===== GUARDRAILS ===== -->
+  <div class="page" id="page-guardrails">
+    <section class="panel"><h2>Risk guardrails — enforced on every brief</h2><div id="riskPanel"></div></section>
+  </div>
+
+  <!-- ===== JOURNAL ===== -->
+  <div class="page" id="page-journal">
+    <section class="panel"><h2>Journal — the Outcome agent</h2><div id="journal"></div></section>
+  </div>
+
+  <!-- ===== ACTIVITY ===== -->
+  <div class="page" id="page-activity">
+    <section class="panel"><h2>Recent briefs</h2><div id="feed"></div></section>
+    <details class="panel" open><summary>Decision log</summary><div id="log"></div></details>
+  </div>
 
   <footer>Paper trading only · every figure on this page is simulated · not financial advice ·
     the desk informs, <b>you</b> approve every trade.</footer>
@@ -231,21 +396,37 @@ const cls = x => x >= 0 ? "pos" : "neg";
 const ICON = {scout:"🔭", fundamental:"📈", technical:"📊", sentiment:"📰", macro:"⚖️",
   strategist:"🧠", backtest:"🧪", risk:"🛡️", execution:"⚡", portfolio:"🧭",
   earnings:"📅", sentinel:"👁️", outcome:"📒"};
-const ROSTER = [
-  ["scout","Scout","Discovery — screens the universe for setups"],
-  ["fundamental","Fundamental","Valuation, growth, margins"],
-  ["technical","Technical","Trend, RSI, breakouts"],
-  ["sentiment","Sentiment","Reads the headlines (via Strategist)"],
-  ["macro","Macro","SPY trend + VIX regime"],
-  ["strategist","Strategist","The debate + verdict (the one LLM call)"],
-  ["backtest","Backtest","Replays the setup on real history"],
-  ["risk","Risk","Sizing, stops, caps — veto power"],
-  ["execution","Execution","Paper fills, only after you approve"],
-  ["portfolio","Portfolio","Allocation & concentration checks"],
-  ["earnings","Earnings","Event-risk calendar"],
-  ["sentinel","Sentinel","Watches every open position"],
-  ["outcome","Outcome","Journals every closed trade"],
-];
+const TEAM = {
+  scout:      {name:"Scout",       title:"Discovery",                  c:["rgba(54,209,220,.30)","rgba(54,209,220,.05)"],
+               blurb:"Screens the whole universe for setups: breakouts, volume surges, momentum."},
+  fundamental:{name:"Fundamental", title:"Valuation analyst",          c:["rgba(25,224,138,.30)","rgba(25,224,138,.05)"],
+               blurb:"Valuation, growth and margins — computed from real fundamentals."},
+  technical:  {name:"Technical",   title:"Chart analyst",              c:["rgba(124,92,255,.30)","rgba(124,92,255,.05)"],
+               blurb:"Trend, RSI, breakouts, distance from the highs."},
+  sentiment:  {name:"Sentiment",   title:"News desk",                  c:["rgba(245,196,81,.30)","rgba(245,196,81,.05)"],
+               blurb:"Reads the raw headlines inside the Strategist's call."},
+  macro:      {name:"Macro",       title:"Regime watch",               c:["rgba(54,209,220,.30)","rgba(124,92,255,.08)"],
+               blurb:"SPY trend + VIX — sets the risk regime for the whole desk."},
+  strategist: {name:"Strategist",  title:"Lead PM — the one LLM call", c:["rgba(25,224,138,.35)","rgba(124,92,255,.20)"],
+               blurb:"Weighs every analyst, writes the bull/bear debate, delivers the verdict."},
+  backtest:   {name:"Backtest",    title:"Historian",                  c:["rgba(124,92,255,.30)","rgba(54,209,220,.06)"],
+               blurb:"Replays this setup on the ticker's own history — honest sample size."},
+  risk:       {name:"Risk",        title:"Risk officer — veto power",  c:["rgba(255,92,114,.30)","rgba(255,92,114,.05)"],
+               blurb:"Sizes every position, sets stop and target, and can veto the whole desk."},
+  execution:  {name:"Execution",   title:"Trading desk",               c:["rgba(25,224,138,.30)","rgba(54,209,220,.06)"],
+               blurb:"Fills paper orders — only after you click."},
+  portfolio:  {name:"Portfolio",   title:"Allocation",                 c:["rgba(54,209,220,.30)","rgba(25,224,138,.06)"],
+               blurb:"Watches allocation, concentration and cash drag."},
+  earnings:   {name:"Earnings",    title:"Events calendar",            c:["rgba(245,196,81,.30)","rgba(255,92,114,.06)"],
+               blurb:"Counts down to earnings — flags binary-event risk."},
+  sentinel:   {name:"Sentinel",    title:"Position watch",             c:["rgba(245,196,81,.30)","rgba(54,209,220,.06)"],
+               blurb:"Watches every open position for stop, target, trend or event triggers."},
+  outcome:    {name:"Outcome",     title:"Performance review",         c:["rgba(25,224,138,.30)","rgba(245,196,81,.06)"],
+               blurb:"Journals every closed trade and measures alpha vs SPY."},
+};
+/* seating order around the table — pods stay adjacent */
+const FLOOR_ORDER = ["scout","fundamental","technical","sentiment","macro","earnings","backtest",
+                     "strategist","risk","sentinel","execution","portfolio","outcome"];
 
 let S = null;          // latest /api/state payload
 let live = false;      // server with buttons vs static file
@@ -426,7 +607,15 @@ function briefCard(br, actionable){
 
 function renderPending(){
   const open = (S.brain.briefs||[]).filter(b => b.status === "pending" || b.status === "vetoed").reverse();
-  $("pendingList").innerHTML = open.length
+  const n = open.length;
+  const badge = $("pendingCount");
+  badge.textContent = n || "";
+  badge.classList.toggle("show", n > 0);
+  $("needsYou").classList.toggle("hot", n > 0);
+  $("needsYou").innerHTML = n
+    ? `<b>${n} brief${n > 1 ? "s" : ""} awaiting your call</b> — <a href="#briefs">review →</a>`
+    : `Nothing needs you right now. Your <a href="#team">team</a> reports here after every run.`;
+  $("pendingList").innerHTML = n
     ? open.map(b => briefCard(b, true)).join("")
     : `<div class="panel empty">Nothing awaiting you. ${live
         ? `Hit <b>🔭 Run scan</b> to put the desk to work.`
@@ -556,62 +745,235 @@ function teamReports(){
   }
   const lastFill = [...briefs].reverse().find(x => x.status === "decided" && x.fill_price);
   if (lastFill)
-    R.execution = {text: `filled your <b>${esc(lastFill.decision).toUpperCase()}</b> —
+    R.execution = {text: `I filled your <b>${esc(lastFill.decision).toUpperCase()}</b> —
         ${esc(lastFill.ticker)} @ ${lastFill.fill_price} (paper)`,
       ctx: when(lastFill.decided_at)};
   if (b.last_scan){
     const s = b.last_scan;
     R.scout = {text: s.setups && s.setups.length
-        ? "flagged " + s.setups.map(x => `<b>${esc(x.ticker)}</b> (${esc(x.reason)})`).join(", ")
-        : `swept ${s.scanned} tickers — nothing cleared the bar`,
+        ? "I flagged " + s.setups.map(x => `<b>${esc(x.ticker)}</b> (${esc(x.reason)})`).join(", ")
+        : `I swept ${s.scanned} tickers — nothing cleared my bar`,
       ctx: when(s.at)};
   } else if (last && last.mode === "opening" && last.scout_reason){
-    R.scout = {text: `flagged <b>${esc(last.ticker)}</b> — ${esc(last.scout_reason)}`,
+    R.scout = {text: `I flagged <b>${esc(last.ticker)}</b> — ${esc(last.scout_reason)}`,
                ctx: when(last.created)};
   }
   if (b.last_check){
     const c = b.last_check;
     R.sentinel = c.positions === 0
-      ? {text: "no open positions to watch", ctx: when(c.at)}
+      ? {text: "No open positions to watch — I'm on standby.", ctx: when(c.at)}
       : (c.flagged || []).length
         ? {sig: "caution", lbl: "flagged",
            text: c.flagged.map(f => `<b>${esc(f.ticker)}</b>: ${esc(f.triggers.join("; "))}`).join(" · "),
            ctx: when(c.at)}
-        : {text: `${c.positions} position(s) reviewed — theses intact`, ctx: when(c.at)};
+        : {text: `I reviewed ${c.positions} position(s) — every thesis intact.`, ctx: when(c.at)};
   }
   const nPos = Object.keys(b.positions).length, eq = equityNow();
   const deployed = eq ? (1 - b.cash / eq) * 100 : 0;
   R.portfolio = {text: nPos
-      ? `${nPos} position(s) · ${deployed.toFixed(0)}% deployed · cash ${money(b.cash)}`
-      : `all cash (${money(b.cash)}) — waiting for the first setup`,
+      ? `We're holding ${nPos} position(s) · ${deployed.toFixed(0)}% deployed · cash ${money(b.cash)}`
+      : `We're all cash (${money(b.cash)}) — waiting for the first setup.`,
     ctx: "live"};
   const J = b.journal || [];
   if (J.length){
     const wins = J.filter(j => j.pnl > 0).length;
     const alphas = J.filter(j => j.alpha !== null && j.alpha !== undefined).map(j => j.alpha);
     const avgA = alphas.length ? alphas.reduce((a, x) => a + x, 0) / alphas.length : null;
-    R.outcome = {text: `${J.length} trade(s) journaled · ${(wins/J.length*100).toFixed(0)}% winners`
+    R.outcome = {text: `I've journaled ${J.length} trade(s) · ${(wins/J.length*100).toFixed(0)}% winners`
         + (avgA === null ? "" : ` · avg alpha vs SPY <b class="${cls(avgA)}">${pct(avgA)}</b>`),
       ctx: `last exit ${esc(J[J.length-1].exit_date)}`};
   }
   return R;
 }
 
+/* ---------- the floor: brain at center, 13 seats, live signal pulses ---------- */
+let floorSig = "";               // rebuild the floor only when someone's status changes
+let selSeat = "strategist";      // whose dossier is open
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function buildFloor(rep){
+  const sig = FLOOR_ORDER.map(k => rep[k] ? "1" : "0").join("");
+  if (sig === floorSig){ updateSeatSel(); return; }
+  floorSig = sig;
+  const lines = [], seats = [];
+  FLOOR_ORDER.forEach((k, i) => {
+    const ang = (-90 + i * 360 / 13) * Math.PI / 180;
+    const x = (50 + 41 * Math.cos(ang)).toFixed(2), y = (50 + 41 * Math.sin(ang)).toFixed(2);
+    const on = !!rep[k], t = TEAM[k];
+    lines.push(`<path id="ln-${k}" d="M ${x} ${y} L 50 50" fill="none" vector-effect="non-scaling-stroke"
+      stroke="${on ? "rgba(25,224,138,.22)" : "rgba(255,255,255,.06)"}" stroke-width="1"/>`);
+    seats.push(`<button class="seat ${on ? "reported" : "standby"}" data-k="${k}"
+        style="left:${x}%;top:${y}%;--c1:${t.c[0]};--c2:${t.c[1]}" title="${t.name} — ${t.title}">
+      <span class="seat-av">${ICON[k]}<span class="dotp"></span></span>
+      <span class="seat-name">${t.name}</span></button>`);
+  });
+  $("floor").innerHTML =
+    `<svg id="floorLines" viewBox="0 0 100 100" preserveAspectRatio="none">${lines.join("")}<g id="pulseLayer"></g></svg>
+     <div class="ring"></div><div class="ring" style="animation-delay:1.4s"></div>
+     <div class="ring" style="animation-delay:2.8s"></div>
+     <div class="brain-core"><span class="k">MARKET BRAIN</span>
+       <span class="eq" id="brainEq"></span><span class="a" id="brainAlpha"></span></div>
+     ${seats.join("")}`;
+  updateSeatSel();
+}
+
+function updateSeatSel(){
+  document.querySelectorAll(".seat").forEach(s =>
+    s.classList.toggle("sel", s.dataset.k === selSeat));
+}
+
+function updateBrain(){
+  const b = S.brain, p = marks(), eq = equityNow();
+  const el = $("brainEq");
+  if (!el) return;
+  el.textContent = money(eq);
+  let a = "";
+  if (b.spy_start && p.SPY){
+    const alpha = (eq / b.starting_cash - 1) * 100 - (p.SPY / b.spy_start - 1) * 100;
+    a = `<span class="${cls(alpha)}">α ${pct(alpha)}</span>`;
+  }
+  $("brainAlpha").innerHTML = a || `<span style="color:var(--muted-2)">13 in sync</span>`;
+}
+
+function renderDeskStats(rep){
+  const n = Object.keys(rep).length, m = S.brain.macro;
+  const runs = [S.brain.last_scan && S.brain.last_scan.at,
+                S.brain.last_check && S.brain.last_check.at].filter(Boolean).sort();
+  const lastRun = runs.length ? runs[runs.length - 1] : null;
+  $("deskStats").innerHTML =
+    `<div class="row"><span class="tstat"><b>13</b> ON DESK</span>
+       <span class="tstat"><b>${n}</b> REPORTING</span>
+       ${m ? `<span class="tstat">REGIME <b>${esc(m.regime).toUpperCase()}</b></span>` : ""}</div>
+     <div class="row">${lastRun ? `<span class="tstat">LAST RUN <b>${esc(lastRun.slice(11, 16))}</b></span>` : ""}
+       <span class="tstat">12 DETERMINISTIC · <b>1</b> LLM</span>
+       <span class="tstat">YOU APPROVE EVERY TRADE</span></div>`;
+}
+
+function renderDossier(rep){
+  const k = selSeat, t = TEAM[k], r = rep[k];
+  const badge = r && r.sig ? `<span class="badge sig-${esc(r.sig)}">${esc(r.lbl || r.sig)}</span>` : "";
+  $("dossier").innerHTML = `
+    <div class="dos-head">
+      <div class="dos-av" style="--c1:${t.c[0]};--c2:${t.c[1]}">${ICON[k]}</div>
+      <div class="dos-id"><b>${t.name}</b><span>${t.title}</span></div>
+      <div class="tm-live ${r ? "on" : ""}"><i></i>${r ? "reported" : "standby"}</div>
+    </div>
+    <div class="dos-blurb">${t.blurb}</div>
+    ${r ? `<div class="bubble">${badge}${r.text}</div>`
+        : `<div class="bubble standby">Standing by — I report after the next run.</div>`}
+    ${r && r.ctx ? `<div class="tm-ctx">${r.ctx}</div>` : ""}
+    <div class="dos-hint">▲ PICK ANY SEAT ON THE FLOOR TO READ THEIR LATEST</div>`;
+}
+
+function renderComms(){
+  const b = S.brain, ev = [];
+  const push = (at, k, html) => { if (at) ev.push({at: String(at), k, html}); };
+  if (b.last_scan) push(b.last_scan.at, "scout", (b.last_scan.setups || []).length
+    ? "I flagged " + b.last_scan.setups.map(x => `<b>${esc(x.ticker)}</b> (${esc(x.reason)})`).join(", ")
+    : `Swept ${b.last_scan.scanned} tickers — nothing cleared my bar. No forced trades.`);
+  if (b.last_check) push(b.last_check.at, "sentinel", b.last_check.positions === 0
+    ? "No open positions to watch — I'm on standby."
+    : (b.last_check.flagged || []).length
+      ? b.last_check.flagged.map(f => `<b>${esc(f.ticker)}</b>: ${esc(f.triggers.join("; "))}`).join(" · ")
+      : `Reviewed ${b.last_check.positions} position(s) — every thesis intact.`);
+  if (b.macro) push(b.macro.as_of, "macro",
+    `${esc(b.macro.note)} — regime <b>${esc(b.macro.regime)}</b>.`);
+  for (const br of (b.briefs || []).slice(-8)){
+    push(br.created, "strategist", `${esc(br.ticker)}: <b>${esc(br.verdict.verdict)}</b> at
+      ${Number(br.verdict.conviction) || 0}% — ${esc(br.verdict.summary)}`);
+    if (br.risk && br.risk.veto)
+      push(br.created, "risk", `<b>VETO</b> on ${esc(br.ticker)} — ${esc(br.risk.veto)}`);
+    if (br.status === "decided" && br.fill_price)
+      push(br.decided_at, "execution",
+        `Filled your <b>${esc(br.decision).toUpperCase()}</b> — ${esc(br.ticker)} @ ${br.fill_price} (paper).`);
+  }
+  for (const j of (b.journal || []).slice(-4))
+    push(j.exit_date, "outcome", `Closed ${esc(j.ticker)}:
+      <b class="${cls(j.pnl_pct)}">${pct(j.pnl_pct, 1)}</b>${j.alpha != null ? ` · alpha ${pct(j.alpha, 1)}` : ""} — journaled.`);
+  ev.sort((a, z) => z.at.localeCompare(a.at));
+  $("commsFeed").innerHTML = ev.slice(0, 12).map(e => {
+    const t = TEAM[e.k];
+    const when = e.at.length > 10 ? e.at.replace("T", " · ").slice(5) : e.at.slice(5);
+    return `<div class="msg"><span class="msg-av" style="--c1:${t.c[0]};--c2:${t.c[1]}">${ICON[e.k]}</span>
+      <div><div class="msg-head"><b>${t.name}</b><span>${esc(when)}</span></div>
+      <div class="msg-body">${e.html}</div></div></div>`;
+  }).join("") || `<div class="empty">The floor goes quiet until the first run — hit 🔭 Run scan.</div>`;
+}
+
+/* ---------- thinking: pulses flow only while an agent is actually working ---------- */
+const SCAN_SEQ  = ["macro","scout","technical","fundamental","earnings","backtest","sentiment","strategist","risk"];
+const CHECK_SEQ = ["macro","sentinel","technical","fundamental","earnings","backtest","sentiment","strategist"];
+let thinkAgent = null, thinkIdx = 0, thinkTimer = null;
+
+function setThinking(k){
+  thinkAgent = k;
+  document.querySelectorAll(".seat").forEach(s =>
+    s.classList.toggle("thinking", s.dataset.k === k));
+  document.querySelectorAll("#floorLines path").forEach(p =>
+    p.classList.toggle("think", p.id === "ln-" + k));
+  const layer = $("pulseLayer");
+  if (layer) layer.innerHTML = (k && !reduceMotion)
+    ? `<circle r="1.3" fill="#36d1dc"><animateMotion dur="1.4s" begin="0s" repeatCount="indefinite">
+         <mpath href="#ln-${k}" xlink:href="#ln-${k}"/></animateMotion></circle>
+       <circle r="1" fill="#19e08a" opacity=".85"><animateMotion dur="1.4s" begin="-0.7s" repeatCount="indefinite">
+         <mpath href="#ln-${k}" xlink:href="#ln-${k}"/></animateMotion></circle>`
+    : "";
+  const core = document.querySelector(".brain-core");
+  if (core) core.classList.toggle("thinking", !!k);
+  const fl = $("floor");
+  if (fl) fl.classList.toggle("busy", !!k);
+  $("floorStage").innerHTML = k
+    ? `${ICON[k]} ${TEAM[k].name} thinking…`
+    : "";
+}
+
+function syncThinking(){
+  const busy = S && S.busy;
+  if (!busy){
+    if (thinkTimer){ clearInterval(thinkTimer); thinkTimer = null; }
+    if (thinkAgent) setThinking(null);
+    return;
+  }
+  const seq = busy === "check" ? CHECK_SEQ : SCAN_SEQ;
+  if (S.stage && seq.includes(S.stage)) thinkIdx = seq.indexOf(S.stage);
+  else thinkIdx = Math.min(thinkIdx, seq.length - 1);
+  setThinking(seq[thinkIdx]);
+  if (!thinkTimer)
+    thinkTimer = setInterval(() => {   // glide forward between polls; real stage re-anchors
+      if (!S || !S.busy) return;
+      const sq = S.busy === "check" ? CHECK_SEQ : SCAN_SEQ;
+      thinkIdx = Math.min(thinkIdx + 1, sq.length - 1);
+      setThinking(sq[thinkIdx]);
+    }, 2600);
+}
+
 function renderTeam(){
   const rep = teamReports();
-  $("team").innerHTML = ROSTER.map(([k, name, blurb]) => {
-    const r = rep[k];
-    const badge = r && r.sig
-      ? `<span class="badge sig-${esc(r.sig)}">${esc(r.lbl || r.sig)}</span>` : "";
-    const say = r
-      ? `<div class="say">${r.text}</div>`
-      : `<div class="say">no reports yet — run a scan</div>`;
-    const ctx = r && r.ctx ? `<div class="ctx">${r.ctx}</div>` : "";
-    return `<article class="tcard ${r ? "" : "quiet"}">
-      <header><span>${ICON[k]}</span><b>${name}</b>${badge}</header>
-      <div class="role">${blurb}</div>${say}${ctx}</article>`;
-  }).join("");
+  renderDeskStats(rep);
+  buildFloor(rep);
+  updateBrain();
+  renderDossier(rep);
+  renderComms();
+  syncThinking();
 }
+
+document.addEventListener("click", e => {
+  const s = e.target.closest(".seat");
+  if (s && S){ selSeat = s.dataset.k; updateSeatSel(); renderDossier(teamReports()); }
+});
+
+/* ---------- hash router: one page per section ---------- */
+const PAGE_IDS = ["overview","briefs","team","positions","guardrails","journal","activity"];
+function route(){
+  const h = (location.hash || "#overview").slice(1);
+  const p = PAGE_IDS.includes(h) ? h : "overview";
+  for (const id of PAGE_IDS)
+    $("page-" + id).classList.toggle("on", id === p);
+  document.querySelectorAll(".tabs a").forEach(a =>
+    a.classList.toggle("on", a.dataset.page === p));
+}
+window.addEventListener("hashchange", route);
+route();
 
 /* ---------- actions ---------- */
 async function decide(id, action){
@@ -638,8 +1000,11 @@ async function runJob(job){
 $("btnScan").onclick = () => runJob("scan");
 $("btnCheck").onclick = () => runJob("check");
 
-fetchState();
-setInterval(fetchState, 5000);
+async function poll(){
+  await fetchState();
+  setTimeout(poll, S && S.busy ? 1500 : 5000);   // watch closely while the desk works
+}
+poll();
 </script>
 </body>
 </html>

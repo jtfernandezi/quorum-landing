@@ -27,6 +27,9 @@ quorum-landing/
 ├── script.js       # Agent roster data, FAQ accordion, mobile nav, email capture,
 │                    #   scroll reveal, and the "How it works" signal-flow animation
 ├── assets/         # (empty) drop images/logos here
+├── desk/           # ★ The working product MVP — a 13-agent paper-trading desk
+│                    #   (Python + yfinance + one LLM call per brief + web dashboard).
+│                    #   Separate world from the landing page; see desk/README.md
 ├── README.md       # This file
 └── CLAUDE.md       # Guidance for Claude Code sessions
 ```
@@ -140,9 +143,15 @@ This page markets a trading product, which is a regulated space. Before going pu
   trademark availability before committing to branding.
 - Keep the footer **risk disclaimer** intact and update it with counsel before launch.
 
-## Roadmap / product ideas (discussed, not built)
+## Roadmap / product ideas
 
-Captured for context — none of this is in the page yet:
+> **Update:** the first working prototype now lives in [`desk/`](desk/README.md) — a local
+> paper-trading desk implementing the 13 agents, the Market Brain (`brain.json`), and the
+> **brief format below** (opening briefs + Sentinel-triggered position updates, with
+> [Buy]/[Pass]/[Trim ⅓]/[Hold]/[Exit all] decisions on a local web dashboard). Exit management
+> beyond stop/target and the behavioral mirror remain unbuilt.
+
+Captured for context — none of this is on the landing page yet:
 
 - **Exit management as a first-class pillar.** The entry side is well covered; exits are the bigger
   value gap. Make the exit *plan* travel with each entry (profit target(s), stop, trailing stop),
@@ -177,4 +186,6 @@ Captured for context — none of this is in the page yet:
 
 ## Status
 
-Concept / prototype. Single page, no backend, no analytics. Not deployed.
+- **Landing page:** concept demo. Single page, no backend, no analytics. Not deployed.
+- **Product MVP:** working prototype in [`desk/`](desk/README.md) — paper trading only,
+  runs locally, benchmarked against SPY. See its README for setup and design rationale.
