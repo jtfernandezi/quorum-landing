@@ -1,1 +1,51 @@
+# ---- OS / editor noise ----
 .DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- Secrets: never commit ----
+# The desk reads OPENAI_API_KEY from the environment. Nothing here should ever
+# hold a credential, but these patterns are a hard backstop.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+config.local.json
+
+# ---- Live desk state (positions, P&L, journal) ----
+# brain.json is the Market Brain: real paper-trading positions, entry prices,
+# conviction scores and per-trade P&L. Publishing a track record has regulatory
+# weight even for paper trading. Keep it local. See desk/README.md.
+brain.json
+desk/brain.json
+*.brain.json
+
+# ---- Data / logs / dumps ----
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.csv
+*.parquet
+.cache/
